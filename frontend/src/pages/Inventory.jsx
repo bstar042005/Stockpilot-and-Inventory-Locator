@@ -5,17 +5,22 @@ function Inventory() {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = async () => {
-    try {
-      const res = await API.get("/products");
-      setProducts(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    const res = await API.get("/products");
+
+    console.log("Products:", res.data);
+
+    setProducts(res.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  console.log("State:", products);
 
   return (
     <div>
