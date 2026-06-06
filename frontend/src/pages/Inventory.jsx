@@ -4,59 +4,108 @@ import ProductForm from "../components/ProductForm";
 
 function Inventory() {
   const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
 
+  // Fetch all products
   const fetchProducts = async () => {
-  try {
-    const res = await API.get("/products");
+    try {
+      const res = await API.get("/products");
 
-    console.log("Products:", res.data);
+      console.log("Products:", res.data);
 
-    setProducts(res.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
-const deleteProduct = async (id) => {
-  try {
-    await API.delete(`/products/${id}`);
+      setProducts(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    fetchProducts();
-  } catch (error) {
-    console.error(error);
-  }
-};
+  // Add product
+  const addProduct = async (productData) => {
+    try {
+      await API.post("/products", productData);
 
-const addProduct = async (productData) => {
-  try {
-    await API.post("/products", productData);
+      fetchProducts();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    fetchProducts();
-  } catch (error) {
-    console.error(error);
-  }
-};
+  // Delete product
+  const deleteProduct = async (id) => {
+    try {
+      await API.delete(`/products/${id}`);
+
+      fetchProducts();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Open edit form
+  const editProduct = (product) => {
+    setEditingProduct(product);
+  };
+
+  // Save updated product
+  const saveUpdate = async () => {
+    try {
+      await API.put(
+        `/products/${editingProduct._id}`,
+        editingProduct
+      );
+
+      setEditingProduct(null);
+
+      fetchProducts();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  console.log("State:", products);
-
   return (
     <div>
       <h1>Inventory</h1>
 
+      {/* Add Product Form */}
       <ProductForm onAddProduct={addProduct} />
+
+      {/* Edit Product Section */}
+      {editingProduct && (
+        <div>
+          <h2>Edit Product</h2>
+
+          <input
+            type="number"
+            value={editingProduct.quantity}
+            onChange={(e) =>
+              setEditingProduct({
+                ...editingProduct,
+                quantity: Number(e.target.value),
+              })
+            }
+          />
+
+          <button onClick={saveUpdate}>
+            Save
+          </button>
+        </div>
+      )}
+
+      {/* Product Table */}
       <table border="1">
         <thead>
-        <tr>
-          <th>Product ID</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Shelf</th>
-          <th>Action</th>
-        </tr>
+          <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Shelf</th>
+            <th>Action</th>
+          </tr>
         </thead>
 
         <tbody>
@@ -68,14 +117,22 @@ const addProduct = async (productData) => {
               <td>{product.quantity}</td>
               <td>{product.shelf}</td>
 
-                          <td>
+              <td>
                 <button
-                  onClick={() => deleteProduct(product._id)}
+                  onClick={() => editProduct(product)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() =>
+                    deleteProduct(product._id)
+                  }
                 >
                   Delete
                 </button>
               </td>
-              </tr>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -84,4 +141,3 @@ const addProduct = async (productData) => {
 }
 
 export default Inventory;
-
