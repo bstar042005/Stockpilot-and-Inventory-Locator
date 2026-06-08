@@ -17,6 +17,24 @@ function OrderFulfillment() {
     fetchProducts();
   }, []);
 
+  const pickItem = async (product) => {
+  try {
+    if (product.quantity <= 0) {
+      alert("Out of Stock");
+      return;
+    }
+
+    await API.put(`/products/${product._id}`, {
+      ...product,
+      quantity: product.quantity - 1,
+    });
+
+    fetchProducts();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   return (
     <div>
       <h1>Order Fulfillment</h1>
@@ -28,6 +46,7 @@ function OrderFulfillment() {
             <th>Name</th>
             <th>Shelf</th>
             <th>Pick</th>
+            <th>Quantity</th>
           </tr>
         </thead>
 
@@ -37,12 +56,17 @@ function OrderFulfillment() {
               <td>{product.productId}</td>
               <td>{product.name}</td>
               <td>{product.shelf}</td>
+              <td>{product.quantity}</td>
 
               <td>
-                <button>
+                <button
+                  onClick={() => pickItem(product)}
+                >
                   Pick Item
                 </button>
+
               </td>
+
             </tr>
           ))}
         </tbody>
