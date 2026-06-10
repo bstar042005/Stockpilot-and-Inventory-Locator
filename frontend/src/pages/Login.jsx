@@ -46,32 +46,32 @@ function Login() {
       {/* LEFT PANEL */}
       <div className="left-panel">
         <div className="logo">
-          <div className="logo-icon">🏭</div>
-          <h2>AI Warehouse</h2>
+          <div className="logo-icon">📑</div>
+          <h2>Mahakaushal Traders</h2>
         </div>
 
         <div className="hero-content">
-          <h1>
+          <h2>
             Intelligent inventory management
             that keeps your warehouse
             operations running smoothly.
-          </h1>
+          </h2>
 
           <div className="stats">
             <div className="stat-card">
-              <h2>50,000+</h2>
-              <p>Products Tracked</p>
+              <h3>Address:</h3>
+              <h4>Andherdeo, galgala Jabalpur (Madhya Pradesh)</h4>
             </div>
-
+{/* 
             <div className="stat-card">
               <h2>99.9%</h2>
               <p>Uptime</p>
-            </div>
+            </div> */}
 
-            <div className="stat-card">
+            {/* <div className="stat-card">
               <h2>200+</h2>
               <p>Warehouses</p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
