@@ -7,6 +7,7 @@ function ProductForm({ onAddProduct }) {
     category: "",
     quantity: "",
     shelf: "",
+    price: "",
   });
 
   const handleChange = (e) => {
@@ -27,6 +28,7 @@ function ProductForm({ onAddProduct }) {
       category: "",
       quantity: "",
       shelf: "",
+      price: "",
     });
   };
 
@@ -67,14 +69,24 @@ function ProductForm({ onAddProduct }) {
       />
 
       <input
+        type="number"
+        name="price"
+        placeholder="Price"
+        value={formData.price}
+        onChange={handleChange}
+      />
+
+      <input
         type="text"
         name="shelf"
-        placeholder="Shelf"
+        placeholder="Shelf (Example: A-1-1)"
         value={formData.shelf}
         onChange={handleChange}
       />
 
-      <button type="submit">Add Product</button>
+      <button type="submit">
+        Add Product
+      </button>
     </form>
   );
 }

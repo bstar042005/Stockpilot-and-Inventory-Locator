@@ -259,3 +259,32 @@
     display: inline-block;
   }
 }
+
+
+.logout-item {
+  margin-top: auto;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.logout-item:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.edit-box {
+  background: #0f172a;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.edit-box input {
+  display: block;
+  width: 250px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: white;
+}

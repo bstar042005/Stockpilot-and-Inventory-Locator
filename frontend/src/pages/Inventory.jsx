@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import ProductForm from "../components/ProductForm";
 import ProductQR from "../components/ProductQR";
 import "./Inventory.css";
 
+import {
+  FiGrid,
+  FiPackage,
+  FiMap,
+  FiBarChart2,
+  FiSettings,
+} from "react-icons/fi";
+
 function Inventory() {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,166 +90,257 @@ function Inventory() {
   };
 
   return (
-    <div className="inventory-page">
+    <div className="dashboard">
 
-      {/* HEADER */}
-      <div className="inventory-header">
-        <div>
-          <h1>Inventory</h1>
-          <p>{products.length} products tracked</p>
+      {/* SIDEBAR */}
+
+      <div className="sidebar">
+
+        <div className="logo">
+          🏭 AI Warehouse
         </div>
-      </div>
 
-      {/* ADD PRODUCT FORM */}
-      <div className="form-section">
-        <ProductForm onAddProduct={addProduct} />
-      </div>
+        <div
+          className="menu-item"
+          onClick={() => navigate("/dashboard")}
+        >
+          <FiGrid />
+          Dashboard
+        </div>
 
-      {/* SEARCH */}
-      <div className="top-controls">
+        <div className="menu-item active">
+          <FiPackage />
+          Inventory
+        </div>
 
-        <input
-          className="search-input"
-          type="text"
-          placeholder="Search name, ID, category..."
-          value={searchTerm}
-          onChange={(e) =>
-            setSearchTerm(e.target.value)
+        <div
+          className="menu-item"
+          onClick={() =>
+            navigate("/warehouse-map")
           }
-        />
+        >
+          <FiMap />
+          Warehouse Map
+        </div>
+
+        <div
+          className="menu-item"
+          onClick={() => navigate("/analytics")}
+        >
+          <FiBarChart2 />
+          Analytics
+        </div>
+
+        <div
+          className="menu-item"
+          onClick={() => navigate("/settings")}
+        >
+          <FiSettings />
+          Settings
+        </div>
+
+        <div
+          className="menu-item logout-item"
+          onClick={() => navigate("/")}
+        >
+          Sign Out
+        </div>
 
       </div>
 
-      {/* EDIT SECTION */}
+      {/* MAIN CONTENT */}
 
-      {editingProduct && (
-        <div className="edit-box">
+      <div className="main">
 
-          <h3>Edit Product Quantity</h3>
+        <div className="inventory-header">
+          <div>
+            <h1>Inventory</h1>
+            <p>
+              {products.length} products tracked
+            </p>
+          </div>
+        </div>
+
+        {/* ADD PRODUCT */}
+
+        <div className="form-section">
+          <ProductForm onAddProduct={addProduct} />
+        </div>
+
+        {/* SEARCH */}
+
+        <div className="top-controls">
 
           <input
-            type="number"
-            value={editingProduct.quantity}
+            className="search-input"
+            type="text"
+            placeholder="Search name, ID, category..."
+            value={searchTerm}
             onChange={(e) =>
-              setEditingProduct({
-                ...editingProduct,
-                quantity: Number(e.target.value),
-              })
+              setSearchTerm(e.target.value)
             }
           />
 
-          <button
-            className="save-btn"
-            onClick={saveUpdate}
-          >
-            Save Changes
-          </button>
+        </div>
+
+        {/* EDIT PRODUCT */}
+
+        {editingProduct && (
+          <div className="edit-box">
+
+            <h3>Edit Product</h3>
+
+            <input
+              type="number"
+              placeholder="Quantity"
+              value={editingProduct.quantity}
+              onChange={(e) =>
+                setEditingProduct({
+                  ...editingProduct,
+                  quantity: Number(e.target.value),
+                })
+              }
+            />
+
+            <input
+              type="number"
+              placeholder="Price"
+              value={editingProduct.price || 0}
+              onChange={(e) =>
+                setEditingProduct({
+                  ...editingProduct,
+                  price: Number(e.target.value),
+                })
+              }
+            />
+
+            <button
+              className="save-btn"
+              onClick={saveUpdate}
+            >
+              Save Changes
+            </button>
+
+          </div>
+        )}
+      
+        {/* TABLE */}
+
+        <div className="table-wrapper">
+
+          <table className="inventory-table">
+
+            <thead>
+              <tr>
+                <th>PRODUCT ID</th>
+                <th>NAME</th>
+                <th>CATEGORY</th>
+                <th>QTY</th>
+                <th>PRICE</th>
+                <th>LOCATION</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              {filteredProducts.map((product) => (
+                <tr key={product._id}>
+
+                  <td>{product.productId}</td>
+
+                  <td>
+                    <strong>
+                      {product.name}
+                    </strong>
+                  </td>
+
+                  <td>
+                    <span className="category-badge">
+                      {product.category}
+                    </span>
+                  </td>
+
+                  <td>
+                    {product.quantity}
+                  </td>
+
+                  <td>
+                    ₹{product.price || 0}
+                  </td>
+
+                  <td>
+                    {product.shelf}
+                  </td>
+
+                  <td>
+                    <span
+                      className={`status-${getStatus(
+                        product.quantity
+                      ).toLowerCase()}`}
+                    >
+                      ● {getStatus(product.quantity)}
+                    </span>
+                  </td>
+
+                  <td>
+
+                    <button
+                      className="action-btn edit-btn"
+                      onClick={() =>
+                        editProduct(product)
+                      }
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="action-btn delete-btn"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Delete this product?"
+                          )
+                        ) {
+                          deleteProduct(
+                            product._id
+                          );
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+
+                    <button
+                      className="action-btn qr-btn"
+                      onClick={() =>
+                        setSelectedProduct(
+                          product
+                        )
+                      }
+                    >
+                      QR
+                    </button>
+
+                  </td>
+
+                </tr>
+              ))}
+
+            </tbody>
+
+          </table>
 
         </div>
-      )}
 
-      {/* TABLE */}
+        {/* QR */}
 
-      <div className="table-wrapper">
-
-        <table className="inventory-table">
-
-          <thead>
-            <tr>
-              <th>PRODUCT ID</th>
-              <th>NAME</th>
-              <th>CATEGORY</th>
-              <th>QTY</th>
-              <th>LOCATION</th>
-              <th>STATUS</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            {filteredProducts.map((product) => (
-              <tr key={product._id}>
-
-                <td>{product.productId}</td>
-
-                <td>
-                  <strong>{product.name}</strong>
-                </td>
-
-                <td>
-                  <span className="category-badge">
-                    {product.category}
-                  </span>
-                </td>
-
-                <td>
-                  <strong>{product.quantity}</strong>
-                </td>
-
-                <td>{product.shelf}</td>
-
-                <td>
-                  <span
-                    className={`status-${getStatus(
-                      product.quantity
-                    ).toLowerCase()}`}
-                  >
-                    ● {getStatus(product.quantity)}
-                  </span>
-                </td>
-
-                <td>
-
-                  <button
-                    className="action-btn edit-btn"
-                    onClick={() =>
-                      editProduct(product)
-                    }
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    className="action-btn delete-btn"
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          "Delete this product?"
-                        )
-                      ) {
-                        deleteProduct(product._id);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-
-                  <button
-                    className="action-btn qr-btn"
-                    onClick={() =>
-                      setSelectedProduct(product)
-                    }
-                  >
-                    QR
-                  </button>
-
-                </td>
-
-              </tr>
-            ))}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      {/* QR SECTION */}
-
-      <div className="qr-section">
-
-        <ProductQR product={selectedProduct} />
+        <div className="qr-section">
+          <ProductQR
+            product={selectedProduct}
+          />
+        </div>
 
       </div>
 

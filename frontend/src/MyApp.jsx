@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
 import WarehouseMap from "./pages/WarehouseMap";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
 
 function MyApp() {
   return (
@@ -24,6 +26,15 @@ function MyApp() {
         <Route
           path="/warehouse-map"
           element={<WarehouseMap />}
+        />
+
+        <Route
+          path="/analytics"
+          element={<Analytics />}
+        />
+        <Route
+          path="/settings"
+          element={<Settings />}
         />
       </Routes>
     </BrowserRouter>

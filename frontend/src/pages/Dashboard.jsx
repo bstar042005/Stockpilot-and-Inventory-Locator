@@ -56,7 +56,7 @@ function Dashboard() {
   );
 
   const totalQuantity = products.reduce(
-    (sum, product) => sum + product.quantity,
+    (sum, product) => sum + Number(product.quantity),
     0
   );
 
@@ -75,7 +75,7 @@ function Dashboard() {
       categoryMap[product.category] = 0;
     }
 
-    categoryMap[product.category] += product.quantity;
+    categoryMap[product.category] += Number(product.quantity);
   });
 
   const chartData = Object.keys(categoryMap).map(
@@ -89,65 +89,70 @@ function Dashboard() {
     <div className="dashboard">
 
       {/* Sidebar */}
-      {/* Sidebar */}
-        <div className="sidebar">
+      <div className="sidebar">
 
-          <div className="logo">
-            🏭 AI Warehouse
-          </div>
-
-          <div className="menu-item active">
-            <FiGrid />
-            Dashboard
-          </div>
-
-          <div
-            className="menu-item"
-            onClick={() => navigate("/inventory")}
-          >
-            <FiPackage />
-            Inventory
-          </div>
-
-          <div
-            className="menu-item"
-            onClick={() => navigate("/warehouse-map")}
-          >
-            <FiMap />
-            Warehouse Map
-          </div>
-
-          <div className="menu-item">
-            <FiBarChart2 />
-            Analytics
-          </div>
-
-          <div className="menu-item">
-            <FiSettings />
-            Settings
-          </div>
-
-          <div className="profile">
-            <div className="avatar">A</div>
-
-            <div>
-              <h4>Admin</h4>
-              <p>Warehouse Manager</p>
-            </div>
-          </div>
-
+        <div className="logo">
+          🏭 AI Warehouse
         </div>
 
-      {/* Main */}
+        <div className="menu-item active">
+          <FiGrid />
+          Dashboard
+        </div>
+
+        <div
+          className="menu-item"
+          onClick={() => navigate("/inventory")}
+        >
+          <FiPackage />
+          Inventory
+        </div>
+
+        <div
+          className="menu-item"
+          onClick={() => navigate("/warehouse-map")}
+        >
+          <FiMap />
+          Warehouse Map
+        </div>
+
+        <div
+          className="menu-item"
+          onClick={() => navigate("/analytics")}
+        >
+          <FiBarChart2 />
+          Analytics
+        </div>
+
+        <div
+          className="menu-item"
+          onClick={() => navigate("/settings")}
+        >
+          <FiSettings />
+          Settings
+        </div>
+
+        <div className="profile">
+          <div className="avatar">P</div>
+
+          <div>
+            <h4>Pinsu</h4>
+            <p>Admin</p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Main Content */}
       <div className="main">
 
         <div className="topbar">
 
           <div>
             <h1>Warehouse Dashboard</h1>
+
             <p>
-              Overview of inventory and warehouse
-              performance
+              Overview of inventory and warehouse operations
             </p>
           </div>
 
@@ -162,7 +167,7 @@ function Dashboard() {
 
         </div>
 
-        {/* Cards */}
+        {/* Statistics Cards */}
         <div className="cards">
 
           <div className="card">
@@ -235,8 +240,7 @@ function Dashboard() {
                         key={index}
                         fill={
                           COLORS[
-                            index %
-                              COLORS.length
+                            index % COLORS.length
                           ]
                         }
                       />
@@ -251,7 +255,7 @@ function Dashboard() {
 
         </div>
 
-        {/* Bottom Section */}
+        {/* Bottom Panels */}
         <div
           className="sections"
           style={{ marginTop: "20px" }}
@@ -263,8 +267,7 @@ function Dashboard() {
 
             {lowStockProducts.length === 0 ? (
               <p>
-                All products are sufficiently
-                stocked.
+                All products are sufficiently stocked.
               </p>
             ) : (
               lowStockProducts.map((product) => (
@@ -304,9 +307,9 @@ function Dashboard() {
                   key={product._id}
                   style={{
                     marginBottom: "15px",
+                    paddingBottom: "10px",
                     borderBottom:
                       "1px solid #1e293b",
-                    paddingBottom: "10px",
                   }}
                 >
                   <strong>
