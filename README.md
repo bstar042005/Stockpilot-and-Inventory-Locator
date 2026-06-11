@@ -208,18 +208,6 @@ http://localhost:5000
 
 ---
 
-##  Future Enhancements
-
-- AI-Based Demand Forecasting
-- Smart Warehouse Optimization
-- Barcode Scanner Integration
-- Real-Time IoT Sensor Connectivity
-- Predictive Inventory Management
-- Automated Reordering System
-- Multi-Warehouse Support
-
----
-
 ##  Use Cases
 
 - Warehouses
