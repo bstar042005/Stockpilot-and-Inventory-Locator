@@ -40,9 +40,11 @@ return (
 
             <p>{user?.email}</p>
 
-            <span className="role">
-              Admin
-            </span>
+            <div className="role">
+            {user?.role === "admin"
+              ? "Admin"
+              : "Worker"}
+          </div>
           </div>
 
         </div>

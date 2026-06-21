@@ -94,7 +94,7 @@ function Sidebar() {
 
         <div>
           <h4>{user?.name}</h4>
-          <p>Admin</p>
+          <p>{user?.role}</p>
         </div>
       </div>
 
