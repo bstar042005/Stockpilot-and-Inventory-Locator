@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import MyApp from './MyApp.jsx'
 
+import "./analytics/posthog";
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MyApp />

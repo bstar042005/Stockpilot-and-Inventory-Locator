@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./Login.css";
+import { trackLogin } from "../analytics/events";
 
 function Login() {
   const navigate = useNavigate();
@@ -44,6 +45,8 @@ const handleLogin = async (e) => {
       "name",
       res.data.user.name
     );
+
+    trackLogin(res.data.user);
 
     alert(
       `Login Successful (${res.data.user.role})`

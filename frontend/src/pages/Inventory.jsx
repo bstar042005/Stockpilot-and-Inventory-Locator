@@ -6,6 +6,12 @@ import ProductQR from "../components/ProductQR";
 import "./Inventory.css";
 import Sidebar from "../components/Sidebar";
 import React, { useEffect, useState } from "react";
+import {
+  trackProductAdded,
+  trackProductUpdated,
+  trackProductDeleted,
+  trackQRGenerated,
+} from "../analytics/events";
 // import {
 //   FiGrid,
 //   FiPackage,
@@ -32,21 +38,32 @@ function Inventory() {
   };
 
   const addProduct = async (productData) => {
-    try {
-      await API.post("/products", productData);
-      fetchProducts();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    const res = await API.post("/products", productData);
 
-  const deleteProduct = async (id) => {
-    try {
-      await API.delete(`/products/${id}`);
-      fetchProducts();
-    } catch (error) {
-      console.error(error);
+    console.log("Product returned from backend:", res.data);
+
+    if (res.data) {
+      trackProductAdded(res.data);
+      console.log("✅ Product Added analytics sent");
     }
+
+    fetchProducts();
+  } catch (error) {
+    console.error("Error adding product:", error);
+  }
+};
+
+  const deleteProduct = async (product) => {
+  try {
+    await API.delete(`/products/${product._id}`);
+
+    trackProductDeleted(product);
+
+    fetchProducts();
+  } catch (error) {
+    console.error(error);
+  }
   };
 
   const editProduct = (product) => {
@@ -54,18 +71,20 @@ function Inventory() {
   };
 
   const saveUpdate = async () => {
-    try {
-      await API.put(
-        `/products/${editingProduct._id}`,
-        editingProduct
-      );
+  try {
+    const res = await API.put(
+      `/products/${editingProduct._id}`,
+      editingProduct
+    );
 
-      setEditingProduct(null);
-      fetchProducts();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    trackProductUpdated(res.data);
+
+    setEditingProduct(null);
+    fetchProducts();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   useEffect(() => {
     fetchProducts();
@@ -271,7 +290,7 @@ function Inventory() {
                       "Delete this product?"
                     )
                   ) {
-                    deleteProduct(product._id);
+                    deleteProduct(product);
                   }
                 }}
               >
@@ -280,18 +299,19 @@ function Inventory() {
             )}
 
           <button
-            className="action-btn qr-btn"
-            onClick={() =>
-              setSelectedProduct(
-                selectedProduct?._id ===
-                  product._id
-                  ? null
-                  : product
-              )
-            }
-          >
-            QR
-          </button>
+  className="action-btn qr-btn"
+  onClick={() => {
+    trackQRGenerated(product);
+
+    setSelectedProduct(
+      selectedProduct?._id === product._id
+        ? null
+        : product
+    );
+  }}
+>
+  QR
+</button>
 
         </td>
 
