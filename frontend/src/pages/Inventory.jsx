@@ -1,5 +1,3 @@
-
-import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import ProductForm from "../components/ProductForm";
 import ProductQR from "../components/ProductQR";
@@ -11,14 +9,9 @@ import {
   trackProductUpdated,
   trackProductDeleted,
   trackQRGenerated,
+  trackSearch,
 } from "../analytics/events";
-// import {
-//   FiGrid,
-//   FiPackage,
-//   FiMap,
-//   FiBarChart2,
-//   FiSettings,
-// } from "react-icons/fi";
+import { createActivity } from "../services/activityApi";
 
 function Inventory() {
   // const navigate = useNavigate();
@@ -47,8 +40,16 @@ function Inventory() {
       trackProductAdded(res.data);
       console.log("✅ Product Added analytics sent");
     }
+    await createActivity({
+    user: localStorage.getItem("name"),
+    role: localStorage.getItem("role"),
+    action: "Product Added",
+    productName: res.data.name,
+    productId: res.data.productId,
+    details: `Shelf ${res.data.shelf}`,
+  });
 
-    fetchProducts();
+    await fetchProducts();
   } catch (error) {
     console.error("Error adding product:", error);
   }
@@ -60,7 +61,7 @@ function Inventory() {
 
     trackProductDeleted(product);
 
-    fetchProducts();
+    await fetchProducts();
   } catch (error) {
     console.error(error);
   }
@@ -80,7 +81,7 @@ function Inventory() {
     trackProductUpdated(res.data);
 
     setEditingProduct(null);
-    fetchProducts();
+    await fetchProducts();
   } catch (error) {
     console.error(error);
   }
@@ -144,9 +145,13 @@ function Inventory() {
             type="text"
             placeholder="Search name, ID..."
             value={searchTerm}
-            onChange={(e) =>
-              setSearchTerm(e.target.value)
-            }
+            onChange={(e) => {
+          setSearchTerm(e.target.value);
+
+          if (e.target.value.length > 2) {
+          trackSearch(e.target.value);
+          }
+          }}
           />
 
         </div>
@@ -214,9 +219,8 @@ function Inventory() {
 <tbody>
 
   {filteredProducts.map((product) => (
-    <React.Fragment key={product._id}>
+      <tr key={product._id}>
 
-      <tr>
 
         <td>{product.productId}</td>
 
@@ -301,7 +305,7 @@ function Inventory() {
           <button
   className="action-btn qr-btn"
   onClick={() => {
-    trackQRGenerated(product);
+    trackQRViewed(product);
 
     setSelectedProduct(
       selectedProduct?._id === product._id
@@ -317,37 +321,6 @@ function Inventory() {
 
       </tr>
 
-     {/* {selectedProduct?._id === product._id && (
-  <tr>
-    <td colSpan="9">
-      <div
-        style={{
-          color: "white",
-          padding: "20px",
-          background: "red",
-        }}
-      >
-        QR TEST {product.name}
-      </div>
-    </td>
-  </tr>
-)} */}
-
-      {selectedProduct && (
-  <div className="qr-popup">
-
-        <button
-          className="close-qr"
-          onClick={() => setSelectedProduct(null)}
-        >
-          ✖
-        </button>
-
-        <ProductQR product={selectedProduct} />
-
-      </div>
-    )}
-    </React.Fragment>
   ))}
 
 </tbody>
@@ -355,6 +328,20 @@ function Inventory() {
     </table>
 
     </div>
+    {selectedProduct && (
+  <div className="qr-popup">
+
+    <button
+      className="close-qr"
+      onClick={() => setSelectedProduct(null)}
+    >
+      ✖
+    </button>
+
+    <ProductQR product={selectedProduct} />
+
+  </div>
+  )}
 
 
     </div>
