@@ -323,24 +323,29 @@ const saveUpdate = async () => {
               </button>
             )}
 
-        onClick={async () => {
-          trackQRGenerated(product);
+        <button
+          className="action-btn qr-btn"
+          onClick={async () => {
+            trackQRGenerated(product);
 
-          await createActivity({
-            user: localStorage.getItem("name"),
-            role: localStorage.getItem("role"),
-            action: "QR Viewed",
-            productName: product.name,
-            productId: product.productId,
-            details: `Viewed QR for Shelf ${product.shelf}`,
-          });
+            await createActivity({
+              user: localStorage.getItem("name"),
+              role: localStorage.getItem("role"),
+              action: "QR Viewed",
+              productName: product.name,
+              productId: product.productId,
+              details: `Viewed QR for Shelf ${product.shelf}`,
+            });
 
-          setSelectedProduct(
-            selectedProduct?._id === product._id
-              ? null
-              : product
-          );
-}}
+            setSelectedProduct(
+              selectedProduct?._id === product._id
+                ? null
+                : product
+            );
+          }}
+        >
+          QR
+        </button>
 
         </td>
 

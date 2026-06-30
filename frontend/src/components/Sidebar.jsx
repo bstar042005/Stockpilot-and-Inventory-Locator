@@ -5,6 +5,7 @@ import {
   FiMap,
   FiBarChart2,
   FiSettings,
+  FiClock,
 } from "react-icons/fi";
 import { trackLogout } from "../analytics/events";
 import { createActivity } from "../services/activityService";
@@ -99,6 +100,18 @@ const logout = async () => {
         <FiBarChart2 />
         Analytics
       </div>
+
+      <div
+      className={`menu-item ${
+        location.pathname === "/activity"
+          ? "active"
+          : ""
+      }`}
+      onClick={() => navigate("/activity")}
+    >
+      <FiClock />
+      Activity
+    </div>
 
       <div
         className={`menu-item ${

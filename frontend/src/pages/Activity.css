@@ -1,0 +1,32 @@
+.analytics-page {
+  padding: 20px;
+}
+
+.analytics-header {
+  margin-bottom: 20px;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.analytics-table th {
+  background: #2563eb;
+  color: white;
+  padding: 14px;
+}
+
+.analytics-table td {
+  color: black;          /* <-- ADD THIS */
+  background: white;     /* <-- ADD THIS */
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.analytics-table tr:hover td {
+  background: #f8fafc;
+}

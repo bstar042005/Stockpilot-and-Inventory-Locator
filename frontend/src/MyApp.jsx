@@ -7,6 +7,7 @@ import WarehouseMap from "./pages/WarehouseMap";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Register from "./pages/Register";
+import Activity from "./pages/Activity";
 
 function MyApp() {
   return (
@@ -39,6 +40,9 @@ function MyApp() {
           path="/analytics"
           element={<Analytics />}
         />
+
+        <Route path="/activity" element={<Activity />} />
+        
         <Route
           path="/settings"
           element={<Settings />}

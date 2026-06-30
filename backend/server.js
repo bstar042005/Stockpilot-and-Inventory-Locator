@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/products", productRoutes);
 
 app.use("/api/auth", authRoutes);
-app.use("/api/activity", activityRoutes);
+app.use("/api/activities", activityRoutes);
 
 // Server
 const PORT = process.env.PORT || 5000;
