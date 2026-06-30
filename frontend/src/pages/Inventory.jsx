@@ -11,8 +11,8 @@ import {
   trackQRGenerated,
   trackSearch,
 } from "../analytics/events";
-import { createActivity } from "../services/activityApi";
-
+import { trackLogout } from "../analytics/events";
+import { createActivity } from "../services/activityService";
 function Inventory() {
   // const navigate = useNavigate();
 
@@ -55,23 +55,34 @@ function Inventory() {
   }
 };
 
-  const deleteProduct = async (product) => {
+const deleteProduct = async (product) => {
   try {
     await API.delete(`/products/${product._id}`);
 
+    // PostHog
     trackProductDeleted(product);
+
+    // MongoDB Activity
+    await createActivity({
+      user: localStorage.getItem("name"),
+      role: localStorage.getItem("role"),
+      action: "Product Deleted",
+      productName: product.name,
+      productId: product.productId,
+      details: `Deleted from Shelf ${product.shelf}`,
+    });
 
     await fetchProducts();
   } catch (error) {
     console.error(error);
   }
-  };
+};
 
   const editProduct = (product) => {
     setEditingProduct(product);
   };
 
-  const saveUpdate = async () => {
+const saveUpdate = async () => {
   try {
     const res = await API.put(
       `/products/${editingProduct._id}`,
@@ -80,7 +91,17 @@ function Inventory() {
 
     trackProductUpdated(res.data);
 
+    await createActivity({
+      user: localStorage.getItem("name"),
+      role: localStorage.getItem("role"),
+      action: "Product Updated",
+      productName: res.data.name,
+      productId: res.data.productId,
+      details: `Quantity: ${res.data.quantity}, Shelf: ${res.data.shelf}`,
+    });
+
     setEditingProduct(null);
+
     await fetchProducts();
   } catch (error) {
     console.error(error);
@@ -302,20 +323,24 @@ function Inventory() {
               </button>
             )}
 
-          <button
-  className="action-btn qr-btn"
-  onClick={() => {
-    trackQRViewed(product);
+        onClick={async () => {
+          trackQRGenerated(product);
 
-    setSelectedProduct(
-      selectedProduct?._id === product._id
-        ? null
-        : product
-    );
-  }}
->
-  QR
-</button>
+          await createActivity({
+            user: localStorage.getItem("name"),
+            role: localStorage.getItem("role"),
+            action: "QR Viewed",
+            productName: product.name,
+            productId: product.productId,
+            details: `Viewed QR for Shelf ${product.shelf}`,
+          });
+
+          setSelectedProduct(
+            selectedProduct?._id === product._id
+              ? null
+              : product
+          );
+}}
 
         </td>
 

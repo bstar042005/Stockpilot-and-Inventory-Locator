@@ -6,6 +6,8 @@ import {
   FiBarChart2,
   FiSettings,
 } from "react-icons/fi";
+import { trackLogout } from "../analytics/events";
+import { createActivity } from "../services/activityService";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -15,10 +17,33 @@ function Sidebar() {
     localStorage.getItem("user")
   );
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
-  };
+const logout = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // PostHog
+    trackLogout(user);
+
+    // MongoDB Activity
+    await createActivity({
+      user: user?.name,
+      role: user?.role,
+      action: "User Logged Out",
+      productName: "",
+      productId: "",
+      details: "User logged out of the system",
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
+
+  localStorage.removeItem("user");
+  localStorage.removeItem("name");
+  localStorage.removeItem("role");
+
+  navigate("/");
+};
 
   return (
     <div className="sidebar">
