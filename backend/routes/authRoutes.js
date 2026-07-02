@@ -8,6 +8,8 @@ const {
   registerUser,
   loginUser,
   forgotPassword,
+  verifyResetOtp,
+  resetPassword,
 } = require("../controllers/authController");
 
 // Registration OTP
@@ -20,5 +22,7 @@ router.post("/login", loginUser);
 
 // Forgot Password
 router.post("/forgot-password", forgotPassword);
+router.post("/verify-reset-otp", verifyResetOtp);
+router.post("/reset-password", resetPassword);
 
 module.exports = router;
