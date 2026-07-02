@@ -7,134 +7,137 @@ import {
   FiSettings,
   FiClock,
 } from "react-icons/fi";
+
 import { trackLogout } from "../analytics/events";
 import { createActivity } from "../services/activityService";
+import inventoryLogo from "../assets/inventory-logo.png";
 
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
+  const user = JSON.parse(localStorage.getItem("user"));
 
-const logout = async () => {
-  try {
-    const user = JSON.parse(localStorage.getItem("user"));
+  const logout = async () => {
+    try {
+      trackLogout(user);
 
-    // PostHog
-    trackLogout(user);
+      await createActivity({
+        user: user?.name,
+        role: user?.role,
+        action: "User Logged Out",
+        productName: "",
+        productId: "",
+        details: "User logged out of the system",
+      });
+    } catch (err) {
+      console.error(err);
+    }
 
-    // MongoDB Activity
-    await createActivity({
-      user: user?.name,
-      role: user?.role,
-      action: "User Logged Out",
-      productName: "",
-      productId: "",
-      details: "User logged out of the system",
-    });
+    localStorage.removeItem("user");
+    localStorage.removeItem("name");
+    localStorage.removeItem("role");
 
-  } catch (err) {
-    console.error(err);
-  }
-
-  localStorage.removeItem("user");
-  localStorage.removeItem("name");
-  localStorage.removeItem("role");
-
-  navigate("/");
-};
+    navigate("/");
+  };
 
   return (
     <div className="sidebar">
 
+      {/* LOGO */}
+
       <div className="logo">
-        📑 Mahakaushal Traders
+
+        <img
+          src={inventoryLogo}
+          alt="AI Warehouse"
+          className="logo-image"
+        />
+
+        <div>
+          <h2>Mahakaushal Traders</h2>
+        </div>
+
       </div>
+
+      {/* MENU */}
 
       <div
         className={`menu-item ${
-          location.pathname === "/dashboard"
-            ? "active"
-            : ""
+          location.pathname === "/dashboard" ? "active" : ""
         }`}
         onClick={() => navigate("/dashboard")}
       >
         <FiGrid />
-        Dashboard
+        <span>Dashboard</span>
       </div>
 
       <div
         className={`menu-item ${
-          location.pathname === "/inventory"
-            ? "active"
-            : ""
+          location.pathname === "/inventory" ? "active" : ""
         }`}
         onClick={() => navigate("/inventory")}
       >
         <FiPackage />
-        Inventory
+        <span>Inventory</span>
       </div>
 
       <div
         className={`menu-item ${
-          location.pathname === "/warehouse-map"
-            ? "active"
-            : ""
+          location.pathname === "/warehouse-map" ? "active" : ""
         }`}
         onClick={() => navigate("/warehouse-map")}
       >
         <FiMap />
-        Warehouse Map
+        <span>Warehouse Map</span>
       </div>
 
       <div
         className={`menu-item ${
-          location.pathname === "/analytics"
-            ? "active"
-            : ""
+          location.pathname === "/analytics" ? "active" : ""
         }`}
         onClick={() => navigate("/analytics")}
       >
         <FiBarChart2 />
-        Analytics
+        <span>Analytics</span>
       </div>
 
       <div
-      className={`menu-item ${
-        location.pathname === "/activity"
-          ? "active"
-          : ""
-      }`}
-      onClick={() => navigate("/activity")}
-    >
-      <FiClock />
-      Activity
-    </div>
+        className={`menu-item ${
+          location.pathname === "/activity" ? "active" : ""
+        }`}
+        onClick={() => navigate("/activity")}
+      >
+        <FiClock />
+        <span>Activity</span>
+      </div>
 
       <div
         className={`menu-item ${
-          location.pathname === "/settings"
-            ? "active"
-            : ""
+          location.pathname === "/settings" ? "active" : ""
         }`}
         onClick={() => navigate("/settings")}
       >
         <FiSettings />
-        Settings
+        <span>Settings</span>
       </div>
 
+      {/* PROFILE */}
+
       <div className="profile">
+
         <div className="avatar">
           {user?.name?.charAt(0).toUpperCase()}
         </div>
 
-        <div>
+        <div className="profile-info">
           <h4>{user?.name}</h4>
           <p>{user?.role}</p>
         </div>
+
       </div>
+
+      {/* LOGOUT */}
 
       <button
         className="logout-btn"
