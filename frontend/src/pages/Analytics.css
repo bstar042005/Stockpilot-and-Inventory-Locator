@@ -8,28 +8,30 @@
 /* ================= HEADER ================= */
 
 .analytics-header {
-  margin-bottom: 30px;
+  margin-bottom: 22px;
 }
 
-.analytics-header h1 {
-  font-size: 48px;
-  font-weight: 700;
-  margin: 0;
-  line-height: 1.15;
+.analytics-header h1{
+    font-size:40px;
+    font-weight:700;
+    margin:0;
+    line-height:1.1;
+    color:#ffffff;
 }
 
-.analytics-header p {
-  margin-top: 8px;
-  font-size: 18px;
-  color: #94a3b8;
+.analytics-header p{
+    margin-top:4px;
+    font-size:16px;
+    color:#94a3b8;
+    font-weight:400;
 }
 
 /* ================= LAST UPDATED ================= */
 
 .last-updated {
   display: inline-block;
-  margin-top: 18px;
-  margin-bottom: 30px;
+  margin-top: 14px;
+  margin-bottom: 24px;
   padding: 10px 18px;
   background: #111827;
   border: 1px solid #2d3748;
