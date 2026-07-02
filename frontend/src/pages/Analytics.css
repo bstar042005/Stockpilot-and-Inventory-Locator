@@ -100,3 +100,35 @@
 .ai-report li{
     margin:8px 0;
 }
+.ai-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    margin-bottom:25px;
+}
+.ai-title{
+    margin:0;
+    font-size:40px;
+    font-weight:700;
+    text-align:center;
+}
+
+.generate-ai-btn{
+    position:absolute;
+    right:0;
+
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 22px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:10px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.generate-ai-btn:hover{
+    background:#1d4ed8;
+}

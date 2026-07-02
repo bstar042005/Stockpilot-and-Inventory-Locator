@@ -90,70 +90,58 @@ return (
       </div>
 
       {/* Cards */}
+<div className="analytics-cards">
 
-      <div className="analytics-cards">
+  <div className="analytics-card">
+    <p>Total Inventory Value</p>
+    <h2>₹{inventoryValue.toLocaleString()}</h2>
+  </div>
 
-        <div className="analytics-card">
-          <p>Total Inventory Value</p>
-          <h2>
-            ₹{inventoryValue.toLocaleString()}
-          </h2>
-        </div>
+  <div className="analytics-card">
+    <p>Total Products</p>
+    <h2>{products.length}</h2>
+  </div>
 
-        <div className="analytics-card">
-          <p>Total Products</p>
-          <h2>{products.length}</h2>
-        </div>
+  <div className="analytics-card">
+    <p>Low Stock Alerts</p>
+    <h2>{lowStockProducts.length}</h2>
+  </div>
 
-        <div className="analytics-card">
-          <p>Low Stock Alerts</p>
-          <h2>{lowStockProducts.length}</h2>
-        </div>
+  <div className="analytics-card">
+    <p>Average Value/Product</p>
+    <h2>₹{avgValue.toFixed(0)}</h2>
+  </div>
 
-        <div className="analytics-card">
-          <p>Average Value/Product</p>
-          <h2>
-            ₹{avgValue.toFixed(0)}
-          </h2>
-        </div>
+</div>
 
-        <div className="analytics-panel">
+{/* Center AI Assistant */}
+<div className="analytics-ai-center">
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
+  <div className="analytics-panel ai-panel">
+<div className="ai-header">
 
-          <h2>AI Warehouse Assistant</h2>
+  <h2>AI Warehouse Assistant</h2>
 
-          <button
-            className="generate-ai-btn"
-            onClick={handleAIInsights}
-          >
-            Generate AI Insights
-          </button>
+  <button
+    className="generate-ai-btn"
+    onClick={handleAIInsights}
+  >
+    Generate AI Insights
+  </button>
 
-        </div>
+</div>
 
-        {loadingAI ? (
-
-          <p>Generating AI Insights...</p>
-
-        ) : (
-
+    {loadingAI ? (
+      <p>Generating AI Insights...</p>
+    ) : (
       <div className="ai-report">
         <ReactMarkdown>{aiSummary}</ReactMarkdown>
       </div>
+    )}
 
-        )}
+  </div>
 
-      </div>
-
-      </div>
+</div>
 
       {/* Charts */}
 
