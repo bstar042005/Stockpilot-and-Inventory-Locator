@@ -1,12 +1,13 @@
 import { useState } from "react";
 import "./FloatingAssistant.css";
+import API from "../services/api";
 
 function FloatingAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const responses = {
     location:
       "Go to the Inventory page and check the Shelf column to locate your product.",
@@ -31,6 +32,55 @@ function FloatingAssistant() {
       { sender: "bot", text: answer },
     ]);
   };
+
+  const searchProduct = async () => {
+  if (!searchTerm.trim()) return;
+
+    setLoading(true);
+
+    try {
+        const res = await API.get("/products");
+
+        const products = res.data;
+
+        const product = products.find(
+        (item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.productId.toLowerCase() === searchTerm.toLowerCase()
+        );
+
+        if (product) {
+        handleQuestion(
+            `📍 Search: ${searchTerm}`,
+            `✅ Product Found
+
+    Name: ${product.name}
+
+    Product ID: ${product.productId}
+
+    Shelf: ${product.shelf}
+
+    Quantity: ${product.quantity}
+
+    Category: ${product.category}`
+        );
+        } else {
+        handleQuestion(
+            `📍 Search: ${searchTerm}`,
+            "❌ Product not found."
+        );
+        }
+    } catch (err) {
+        handleQuestion(
+        "System",
+        "⚠ Unable to fetch products."
+        );
+    }
+
+    setLoading(false);
+    setSearchTerm("");
+    setShowSearch(false);
+    };
 
   return (
     <>
@@ -126,8 +176,11 @@ function FloatingAssistant() {
         onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        <button className="search-btn">
-        Search
+        <button
+        className="search-btn"
+        onClick={searchProduct}
+        >
+        {loading ? "Searching..." : "Search"}
         </button>
 
     </div>
