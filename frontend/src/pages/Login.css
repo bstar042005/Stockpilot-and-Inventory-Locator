@@ -39,6 +39,13 @@
   font-size: 24px;
 }
 
+.logo-image {
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
 .hero-content h1 {
   max-width: 550px;
   line-height: 1.5;
@@ -84,21 +91,17 @@
 .login-box h1 {
   font-size: 3rem;
   margin-bottom: 10px;
+  text-align: center;
 }
 
-.login-box p{
-    color:#94a3b8;
-    margin-bottom:34px;
-    text-align:center;
-    font-size:18px;
+.login-box > p {
+  color: #94a3b8;
+  margin-bottom: 34px;
+  text-align: center;
+  font-size: 18px;
 }
 
-.logo-image{
-    width:62px;
-    height:62px;
-    border-radius:16px;
-    object-fit:cover;
-}
+/* FORM */
 
 .login-box form {
   display: flex;
@@ -106,11 +109,17 @@
 }
 
 .login-box label {
+  display: block;
+  width: 100%;
+  text-align: left;
   margin-bottom: 10px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
 }
 
 .login-box input {
+  width: 100%;
   padding: 18px;
   margin-bottom: 20px;
   border-radius: 15px;
@@ -120,19 +129,51 @@
   font-size: 16px;
 }
 
+.login-box input::placeholder {
+  color: #64748b;
+}
+
 .password-box {
   position: relative;
+}
+
+.password-box input {
+  margin-bottom: 0;
 }
 
 .password-box button {
   position: absolute;
   right: 15px;
-  top: 18px;
+  top: 50%;
+  transform: translateY(-50%);
   border: none;
   background: transparent;
   color: white;
   cursor: pointer;
 }
+
+/* Forgot Password */
+
+.forgot-password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 22px;
+}
+
+.forgot-password span {
+  color: #60a5fa;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.forgot-password span:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Button */
 
 .signin-btn {
   margin-top: 10px;
@@ -144,11 +185,14 @@
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .signin-btn:hover {
   background: #1d4ed8;
 }
+
+/* Register */
 
 .register-link {
   margin-top: 25px;
@@ -159,6 +203,11 @@
 .register-link span {
   color: #3b82f6;
   cursor: pointer;
+  font-weight: 600;
+}
+
+.register-link span:hover {
+  text-decoration: underline;
 }
 
 /* MOBILE */
@@ -181,23 +230,4 @@
     width: 90%;
     padding: 40px 0;
   }
-}
-
-.forgot-password{
-  display:flex;
-  justify-content:flex-end;
-  margin-top:-8px;
-  margin-bottom:22px;
-}
-
-.forgot-password span{
-  color:#60a5fa;
-  font-size:14px;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.forgot-password span:hover{
-  color:white;
-  text-decoration:underline;
 }
