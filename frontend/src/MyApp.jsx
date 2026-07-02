@@ -9,6 +9,7 @@ import Settings from "./pages/Settings";
 import Register from "./pages/Register";
 import Activity from "./pages/Activity";
 import Chatbot from "./components/Chatbot";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function MyApp() {
   return (
@@ -43,6 +44,9 @@ function MyApp() {
         />
 
         <Route path="/activity" element={<Activity />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />}
+        />
         
         <Route
           path="/settings"

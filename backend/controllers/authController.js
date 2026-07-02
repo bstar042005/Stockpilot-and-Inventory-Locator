@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const sendOTP = require("../utils/sendEmail");
 const pendingUsers = require("../tempOtpStore");
@@ -278,9 +279,51 @@ const loginUser = async (
   }
 };
 
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Email not registered",
+      });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    // Save OTP
+    user.resetOtp = otp;
+    user.resetOtpExpiry = Date.now() + 5 * 60 * 1000;
+
+    await user.save();
+
+    // Reuse your existing email utility
+    await sendOTP(email, otp);
+
+    res.status(200).json({
+      message: "OTP sent successfully",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   sendOtp,
   verifyOtp,
   registerUser,
   loginUser,
+  forgotPassword,
 };

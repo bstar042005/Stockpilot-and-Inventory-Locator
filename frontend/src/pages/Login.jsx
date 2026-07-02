@@ -157,6 +157,12 @@ const handleLogin = async (e) => {
               </button>
             </div>
 
+              <div className="forgot-password">
+              <span onClick={() => navigate("/forgot-password")}>
+                Forgot Password?
+              </span>
+            </div>
+
             <button
               type="submit"
               className="signin-btn"
