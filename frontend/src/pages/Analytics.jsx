@@ -49,11 +49,6 @@ function Analytics() {
     (product) => product.quantity < 20
   );
 
-  const avgValue =
-    products.length > 0
-      ? inventoryValue / products.length
-      : 0;
-
   const warehouseHealth = products.length
   ? Math.round(
       ((products.length - lowStockProducts.length) /
@@ -95,18 +90,22 @@ const PIE_COLORS = [
   "#EF4444",
 ];
 
-  const topProducts = [...products]
-    .sort((a, b) => b.quantity - a.quantity)
-    .slice(0, 5);
+  const categoryMap = {};
 
-  const monthlyData = [
-    { month: "Jan", added: 12 },
-    { month: "Feb", added: 18 },
-    { month: "Mar", added: 22 },
-    { month: "Apr", added: 15 },
-    { month: "May", added: 28 },
-    { month: "Jun", added: 24 },
-  ];
+products.forEach((product) => {
+  const category = product.category || "Other";
+
+  if (!categoryMap[category]) {
+    categoryMap[category] = 0;
+  }
+
+  categoryMap[category] += Number(product.quantity);
+});
+
+const categoryData = Object.keys(categoryMap).map((category) => ({
+  category,
+  quantity: categoryMap[category],
+}));
 
   const handleAIInsights = async () => {
   setLoadingAI(true);
@@ -117,6 +116,38 @@ const PIE_COLORS = [
 
   setLoadingAI(false);
 };
+
+const dailyMap = {};
+
+products.forEach((product) => {
+  if (!product.createdAt) return;
+
+  const day = new Date(product.createdAt).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+  });
+
+  if (!dailyMap[day]) {
+    dailyMap[day] = 0;
+  }
+
+  dailyMap[day]++;
+});
+
+const dailyActivity = Object.keys(dailyMap).map((day) => ({
+  day,
+  products: dailyMap[day],
+}));
+
+const topInventoryValue = [...products]
+  .map((product) => ({
+    ...product,
+    value:
+      Number(product.price || 0) *
+      Number(product.quantity),
+  }))
+  .sort((a, b) => b.value - a.value)
+  .slice(0, 5);
 
 return (
   <div className="dashboard">
@@ -192,116 +223,164 @@ return (
 
       <div className="analytics-grid">
 
-        <div className="analytics-panel">
+  <div className="analytics-panel">
 
-          <h2>
-            Top Products by Quantity
-          </h2>
+    <h2>Stock by Category</h2>
 
-          <ResponsiveContainer
-            width="100%"
-            height={300}
-          >
-            <BarChart data={topProducts}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={categoryData}>
+        <XAxis dataKey="category" />
+        <YAxis />
+        <Tooltip />
 
-              <Bar
-                dataKey="quantity"
-                fill="#10B981"
-              />
-            </BarChart>
-          </ResponsiveContainer>
+        <Bar
+          dataKey="quantity"
+          fill="#3B82F6"
+        />
 
-        </div>
+      </BarChart>
+    </ResponsiveContainer>
 
-        <div className="analytics-panel">
+  </div>
 
-  <h2>Inventory Status</h2>
+  <div className="analytics-panel">
 
-  <ResponsiveContainer
-    width="100%"
-    height={300}
-  >
-    <PieChart>
+    <h2>Inventory Status</h2>
 
-      <Pie
-        data={inventoryStatus}
-        dataKey="value"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        outerRadius={90}
-        label
-      >
-        {inventoryStatus.map((entry, index) => (
-          <Cell
-            key={index}
-            fill={PIE_COLORS[index]}
-          />
-        ))}
-      </Pie>
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
 
-      <Tooltip />
+        <Pie
+          data={inventoryStatus}
+          dataKey="value"
+          nameKey="name"
+          outerRadius={90}
+          label
+        >
+          {inventoryStatus.map((entry, index) => (
+            <Cell
+              key={index}
+              fill={PIE_COLORS[index]}
+            />
+          ))}
+        </Pie>
 
-      <Legend />
+        <Tooltip />
 
-    </PieChart>
-  </ResponsiveContainer>
+        <Legend />
+
+      </PieChart>
+    </ResponsiveContainer>
+
+  </div>
 
 </div>
 
-      </div>
+      <div className="analytics-grid">
+
+  <div className="analytics-panel">
+
+    <h2>Daily Activity</h2>
+
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={dailyActivity}>
+        <XAxis dataKey="day" />
+        <YAxis />
+        <Tooltip />
+
+        <Line
+          type="monotone"
+          dataKey="products"
+          stroke="#3B82F6"
+          strokeWidth={3}
+        />
+
+      </LineChart>
+    </ResponsiveContainer>
+
+  </div>
+
+  <div className="analytics-panel">
+
+    <h2>Worker Activity</h2>
+
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart
+        data={[
+          { worker: "Admin", tasks: 32 },
+          { worker: "Worker 1", tasks: 21 },
+          { worker: "Worker 2", tasks: 18 },
+        ]}
+      >
+        <XAxis dataKey="worker" />
+        <YAxis />
+        <Tooltip />
+
+        <Bar
+          dataKey="tasks"
+          fill="#8B5CF6"
+        />
+
+      </BarChart>
+    </ResponsiveContainer>
+
+  </div>
+
+</div>
+
 
       {/* Low Stock Table */}
 
-      <div className="analytics-panel">
+      
+<div className="analytics-grid">
 
-        <h2>Low Stock Alerts</h2>
+  {/* Top Inventory Value */}
 
-        <table className="analytics-table">
+  <div className="analytics-panel">
 
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Qty</th>
-              <th>Price</th>
-            </tr>
-          </thead>
+    <h2>Top Inventory Value</h2>
 
-          <tbody>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={topInventoryValue}>
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
 
-            {lowStockProducts.length === 0 ? (
-              <tr>
-                <td colSpan="3">
-                  No low stock products
-                </td>
-              </tr>
-            ) : (
-              lowStockProducts.map(
-                (product) => (
-                  <tr key={product._id}>
-                    <td>{product.name}</td>
+        <Bar
+          dataKey="value"
+          fill="#10B981"
+        />
+      </BarChart>
+    </ResponsiveContainer>
 
-                    <td>
-                      {product.quantity}
-                    </td>
+  </div>
 
-                    <td>
-                      ₹{product.price || 0}
-                    </td>
-                  </tr>
-                )
-              )
-            )}
+  {/* Top Products by Quantity */}
 
-          </tbody>
+  <div className="analytics-panel">
 
-        </table>
+    <h2>Top Products by Quantity</h2>
 
-      </div>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart
+        data={[...products]
+          .sort((a, b) => b.quantity - a.quantity)
+          .slice(0, 5)}
+      >
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
 
+        <Bar
+          dataKey="quantity"
+          fill="#3B82F6"
+        />
+      </BarChart>
+    </ResponsiveContainer>
+
+  </div>
+
+</div>
       </div>
 
     </div>
