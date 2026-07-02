@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-import "./Login.css";
+import "./Register.css";
+import { Eye, EyeOff } from "lucide-react";
+import inventoryLogo from "../assets/inventory-logo.png";
 
 function Register() {
   const navigate = useNavigate();
@@ -13,36 +15,30 @@ function Register() {
 
   const [otp, setOtp] = useState("");
   const [showOtp, setShowOtp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // SEND OTP
   const handleSendOtp = async (e) => {
     e.preventDefault();
 
-    alert("Button Clicked");
-
     try {
-      const res = await API.post(
-        "/auth/send-otp",
-        {
-          name,
-          email,
-          password,
-          role,
-        }
-      );
+      const res = await API.post("/auth/send-otp", {
+        name,
+        email,
+        password,
+        role,
+      });
 
       console.log(res.data);
-
       alert("OTP sent to your email!");
-
       setShowOtp(true);
     } catch (error) {
       console.error(error);
 
       alert(
         error.response?.data?.message ||
-        error.message ||
-        "Failed to send OTP"
+          error.message ||
+          "Failed to send OTP"
       );
     }
   };
@@ -50,28 +46,21 @@ function Register() {
   // VERIFY OTP
   const handleVerifyOtp = async () => {
     try {
-      const res = await API.post(
-        "/auth/verify-otp",
-        {
-          email,
-          otp,
-        }
-      );
+      const res = await API.post("/auth/verify-otp", {
+        email,
+        otp,
+      });
 
       console.log(res.data);
-
-      alert(
-        "Account Created Successfully!"
-      );
-
+      alert("Account Created Successfully!");
       navigate("/");
     } catch (error) {
       console.error(error);
 
       alert(
         error.response?.data?.message ||
-        error.message ||
-        "OTP Verification Failed"
+          error.message ||
+          "OTP Verification Failed"
       );
     }
   };
@@ -79,15 +68,46 @@ function Register() {
   return (
     <div className="login-container">
 
+      {/* LEFT PANEL */}
+
       <div className="left-panel">
+
         <div className="logo">
-          <div className="logo-icon">
-            🏭
-          </div>
+          <img
+            src={inventoryLogo}
+            alt="AI Warehouse"
+            className="logo-image"
+          />
 
           <h2>AI Warehouse</h2>
         </div>
+
+        <div className="hero-content">
+
+          <h3>Smart Inventory Management</h3>
+
+          <p>
+            Manage inventory, locate products,
+            monitor warehouse stock and simplify
+            daily warehouse operations using AI.
+          </p>
+
+          <ul className="feature-list">
+            <li>Real-time Inventory Tracking</li>
+            <li>AI Warehouse Assistant</li>
+            <li>Smart Product Locator</li>
+            <li>QR Support</li>
+          </ul>
+
+        </div>
+
+        {/* <div className="version">
+          AI Warehouse Management System
+        </div> */}
+
       </div>
+
+      {/* RIGHT PANEL */}
 
       <div className="right-panel">
 
@@ -97,16 +117,13 @@ function Register() {
 
           <form onSubmit={handleSendOtp}>
 
-            <label>
-              Full Name
-            </label>
+            <label>Full Name</label>
 
             <input
               type="text"
+              placeholder="Enter your full name"
               value={name}
-              onChange={(e) =>
-                setName(e.target.value)
-              }
+              onChange={(e) => setName(e.target.value)}
               required
               disabled={showOtp}
             />
@@ -115,87 +132,75 @@ function Register() {
 
             <input
               type="email"
+              placeholder="Enter your email"
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
               required
               disabled={showOtp}
             />
 
-            <label>
-              Password
-            </label>
+            <label>Password</label>
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) =>
-                setPassword(
-                  e.target.value
-                )
-              }
-              required
-              disabled={showOtp}
-            />
+            <div className="password-box">
 
-            <label>
-              Role
-            </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={showOtp}
+              />
+
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff size={20} strokeWidth={2} />
+                ) : (
+                  <Eye size={20} strokeWidth={2} />
+                )}
+              </button>
+
+            </div>
+
+            <label>Role</label>
 
             <select
               value={role}
-              onChange={(e) =>
-                setRole(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setRole(e.target.value)}
               required
               disabled={showOtp}
             >
-              <option value="worker">
-                Worker
-              </option>
-
-              <option value="admin">
-                Admin
-              </option>
+              <option value="worker">Worker</option>
+              <option value="admin">Admin</option>
             </select>
 
             {!showOtp ? (
               <button
                 type="submit"
                 className="signin-btn"
-                style={{
-                  cursor: "pointer",
-                }}
               >
                 Send OTP
               </button>
             ) : (
               <>
-                <label>
-                  Enter OTP
-                </label>
+                <label>Enter OTP</label>
 
                 <input
                   type="text"
-                  value={otp}
-                  onChange={(e) =>
-                    setOtp(
-                      e.target.value
-                    )
-                  }
                   placeholder="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
                   required
                 />
 
                 <button
                   type="button"
                   className="signin-btn"
-                  onClick={
-                    handleVerifyOtp
-                  }
+                  onClick={handleVerifyOtp}
                 >
                   Verify OTP
                 </button>
@@ -206,12 +211,7 @@ function Register() {
 
           <div className="register-link">
             Already have an account?
-
-            <span
-              onClick={() =>
-                navigate("/")
-              }
-            >
+            <span onClick={() => navigate("/")}>
               Login
             </span>
           </div>

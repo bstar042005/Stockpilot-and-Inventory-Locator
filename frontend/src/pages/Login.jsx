@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./Login.css";
 import { trackLogin } from "../analytics/events";
+import inventoryLogo from "../assets/inventory-logo.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -69,7 +70,11 @@ const handleLogin = async (e) => {
       {/* LEFT PANEL */}
       <div className="left-panel">
         <div className="logo">
-          <div className="logo-icon">📑</div>
+                  <img
+          src={inventoryLogo}
+          alt="AI Warehouse"
+          className="logo-image"
+        />
           <h2>Mahakaushal Traders</h2>
         </div>
 

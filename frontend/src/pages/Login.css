@@ -86,9 +86,18 @@
   margin-bottom: 10px;
 }
 
-.login-box p {
-  color: #94a3b8;
-  margin-bottom: 40px;
+.login-box p{
+    color:#94a3b8;
+    margin-bottom:34px;
+    text-align:center;
+    font-size:18px;
+}
+
+.logo-image{
+    width:62px;
+    height:62px;
+    border-radius:16px;
+    object-fit:cover;
 }
 
 .login-box form {
