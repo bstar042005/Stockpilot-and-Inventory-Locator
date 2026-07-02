@@ -12,6 +12,10 @@ import {
   Tooltip,
   LineChart,
   Line,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
 } from "recharts";
 import ReactMarkdown from "react-markdown";
 
@@ -49,6 +53,47 @@ function Analytics() {
     products.length > 0
       ? inventoryValue / products.length
       : 0;
+
+  const warehouseHealth = products.length
+  ? Math.round(
+      ((products.length - lowStockProducts.length) /
+        products.length) *
+        100
+    )
+  : 100;
+
+  const timeSaved = products.length * 3;
+
+  const aiQueries = 0;
+
+  const inventoryStatus = [
+  {
+    name: "Healthy",
+    value: products.filter(
+      (p) => Number(p.quantity) >= 20
+    ).length,
+  },
+  {
+    name: "Low Stock",
+    value: products.filter(
+      (p) =>
+        Number(p.quantity) > 0 &&
+        Number(p.quantity) < 20
+    ).length,
+  },
+  {
+    name: "Out of Stock",
+    value: products.filter(
+      (p) => Number(p.quantity) === 0
+    ).length,
+  },
+];
+
+const PIE_COLORS = [
+  "#22C55E",
+  "#F59E0B",
+  "#EF4444",
+];
 
   const topProducts = [...products]
     .sort((a, b) => b.quantity - a.quantity)
@@ -93,23 +138,23 @@ return (
 <div className="analytics-cards">
 
   <div className="analytics-card">
-    <p>Total Inventory Value</p>
+    <p>Warehouse Health</p>
+    <h2>{warehouseHealth}%</h2>
+  </div>
+
+  <div className="analytics-card">
+    <p>Total Stock Value</p>
     <h2>₹{inventoryValue.toLocaleString()}</h2>
   </div>
 
   <div className="analytics-card">
-    <p>Total Products</p>
-    <h2>{products.length}</h2>
+    <p>Time Saved</p>
+    <h2>{timeSaved} mins</h2>
   </div>
 
   <div className="analytics-card">
-    <p>Low Stock Alerts</p>
-    <h2>{lowStockProducts.length}</h2>
-  </div>
-
-  <div className="analytics-card">
-    <p>Average Value/Product</p>
-    <h2>₹{avgValue.toFixed(0)}</h2>
+    <p>AI Queries</p>
+    <h2>{aiQueries}</h2>
   </div>
 
 </div>
@@ -173,28 +218,39 @@ return (
 
         <div className="analytics-panel">
 
-          <h2>
-            Monthly Product Additions
-          </h2>
+  <h2>Inventory Status</h2>
 
-          <ResponsiveContainer
-            width="100%"
-            height={300}
-          >
-            <LineChart data={monthlyData}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
+  <ResponsiveContainer
+    width="100%"
+    height={300}
+  >
+    <PieChart>
 
-              <Line
-                type="monotone"
-                dataKey="added"
-                stroke="#8B5CF6"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      <Pie
+        data={inventoryStatus}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius={90}
+        label
+      >
+        {inventoryStatus.map((entry, index) => (
+          <Cell
+            key={index}
+            fill={PIE_COLORS[index]}
+          />
+        ))}
+      </Pie>
 
-        </div>
+      <Tooltip />
+
+      <Legend />
+
+    </PieChart>
+  </ResponsiveContainer>
+
+</div>
 
       </div>
 
