@@ -142,3 +142,35 @@
 
   margin-right: auto;
 }
+.search-box {
+  margin-top: 15px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.search-btn {
+  width: 100%;
+
+  padding: 10px;
+
+  background: #2563eb;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: #1d4ed8;
+}

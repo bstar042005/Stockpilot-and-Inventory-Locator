@@ -4,6 +4,8 @@ import "./FloatingAssistant.css";
 function FloatingAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const responses = {
     location:
@@ -59,16 +61,11 @@ function FloatingAssistant() {
               👋 Hi! Choose a question:
             </p>
 
-            <button
-              className="question-btn"
-              onClick={() =>
-                handleQuestion(
-                  "📍 Where is my product?",
-                  responses.location
-                )
-              }
+           <button
+            className="question-btn"
+            onClick={() => setShowSearch(true)}
             >
-              📍 Where is my product?
+            📍 Where is my product?
             </button>
 
             <button
@@ -118,6 +115,23 @@ function FloatingAssistant() {
             >
               👤 Contact Admin
             </button>
+
+            {showSearch && (
+  <div className="search-box">
+
+        <input
+        type="text"
+        placeholder="Enter Product Name or ID"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <button className="search-btn">
+        Search
+        </button>
+
+    </div>
+    )}
 
             <div className="chat-history">
               {messages.map((msg, index) => (
