@@ -25,3 +25,53 @@
 .floating-assistant:hover {
   transform: scale(1.08);
 }
+
+.assistant-window {
+  position: fixed;
+  bottom: 100px;
+  right: 25px;
+
+  width: 320px;
+  background: white;
+
+  border-radius: 15px;
+  overflow: hidden;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+
+  z-index: 9999;
+}
+
+.assistant-header {
+  background: #2563eb;
+  color: white;
+
+  padding: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.assistant-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.assistant-body {
+  padding: 20px;
+  min-height: 180px;
+  font-size: 15px;
+  line-height: 1.5;
+
+  background: white;
+  color: #222;      
+}
