@@ -217,38 +217,37 @@ function Dashboard() {
   ) : (
 
     <>
-      {(showAllRecent
-        ? products
-        : products.slice(0, 5)
-      ).map((product) => (
+  {(showAllRecent
+    ? [...products].sort(
+        (a, b) =>
+          new Date(b.createdAt) - new Date(a.createdAt)
+      )
+    : [...products]
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt) - new Date(a.createdAt)
+        )
+        .slice(0, 5)
+  ).map((product) => (
 
-        <div
-          key={product._id}
-          className="recent-product"
-        >
+    <div
+      key={product._id}
+      className="recent-product"
+    >
+      <strong>{product.name}</strong>
+    </div>
 
-          <strong>{product.name}</strong>
+  ))}
 
-        </div>
-
-      ))}
-
-      {products.length > 5 && (
-
-        <button
-          className="view-more-btn"
-          onClick={() =>
-            setShowAllRecent(!showAllRecent)
-          }
-        >
-          {showAllRecent
-            ? "View Less ▲"
-            : "View More ▼"}
-        </button>
-
-      )}
-
-    </>
+  {products.length > 5 && (
+    <button
+      className="view-more-btn"
+      onClick={() => setShowAllRecent(!showAllRecent)}
+    >
+      {showAllRecent ? "View Less ▲" : "View More ▼"}
+    </button>
+  )}
+</>
 
   )}
 
