@@ -39,22 +39,20 @@ function Dashboard() {
     0
   );
 
-  const lowStockProducts = products.filter(
-    (product) => Number(product.quantity) < 20
-  );
+  // Low stock products sorted from lowest quantity to highest
+  const lowStockProducts = [...products]
+    .filter((product) => Number(product.quantity) < 20)
+    .sort((a, b) => Number(a.quantity) - Number(b.quantity));
 
   const inventoryValue = products.reduce(
     (sum, product) =>
       sum +
-      Number(product.quantity) *
-        Number(product.price || 0),
+      Number(product.quantity) * Number(product.price || 0),
     0
   );
 
   // Greeting
-
-  const firstName =
-    user?.name?.split(" ")[0] || "User";
+  const firstName = user?.name?.split(" ")[0] || "User";
 
   const hour = new Date().getHours();
 
@@ -77,9 +75,7 @@ function Dashboard() {
       <div className="main">
 
         {/* Header */}
-
         <div className="topbar">
-
           <h2 className="greeting">
             {greeting}, {firstName}
           </h2>
@@ -91,13 +87,10 @@ function Dashboard() {
             stock levels and warehouse operations
             in real time.
           </p>
-
         </div>
 
         {/* Statistics Cards */}
-
         <div className="cards">
-
           <div className="card">
             <p>Total Products</p>
             <h2>{products.length}</h2>
@@ -110,9 +103,7 @@ function Dashboard() {
 
           <div className="card">
             <p>Inventory Value</p>
-            <h2>
-              ₹{inventoryValue.toLocaleString()}
-            </h2>
+            <h2>₹{inventoryValue.toLocaleString()}</h2>
           </div>
 
           <div className="card">
@@ -122,140 +113,136 @@ function Dashboard() {
 
           <div className="card">
             <p>Current Streak</p>
-            <h2>
-              {user?.currentStreak || 1} Days
-            </h2>
+            <h2>{user?.currentStreak || 1} Days</h2>
           </div>
 
           <div className="card">
             <p>Longest Streak</p>
-            <h2>
-              {user?.longestStreak || 1} Days
-            </h2>
+            <h2>{user?.longestStreak || 1} Days</h2>
           </div>
-
         </div>
 
         {/* Bottom Panels */}
-
         <div
           className="sections"
           style={{ marginTop: "24px" }}
         >
 
-          {/* Low Stock */}
-<div className="panel">
+          {/* Low Stock Alerts */}
+          <div className="panel">
 
-  <h2>Low Stock Alerts</h2>
+            <h2>Low Stock Alerts</h2>
 
-  {lowStockProducts.length === 0 ? (
+            {lowStockProducts.length === 0 ? (
 
-    <p>All products are sufficiently stocked.</p>
+              <p>All products are sufficiently stocked.</p>
 
-  ) : (
+            ) : (
 
-    <>
-      {(showAllLowStock
-        ? lowStockProducts
-        : lowStockProducts.slice(0, 5)
-      ).map((product) => (
+              <>
+                {(showAllLowStock
+                  ? lowStockProducts
+                  : lowStockProducts.slice(0, 5)
+                ).map((product) => (
 
-        <div
-          key={product._id}
-          className="low-stock-item"
-        >
+                  <div
+                    key={product._id}
+                    className="low-stock-item"
+                  >
 
-          <div>
+                    <div>
+                      <strong>{product.name}</strong>
+                      <br />
+                      <small>{product.productId}</small>
+                    </div>
 
-            <strong>{product.name}</strong>
+                    <span className="low-stock-count">
+                      {product.quantity} left
+                    </span>
 
-            <br />
+                  </div>
 
-            <small>{product.productId}</small>
+                ))}
+
+                {lowStockProducts.length > 5 && (
+
+                  <button
+                    className="view-more-btn"
+                    onClick={() =>
+                      setShowAllLowStock(!showAllLowStock)
+                    }
+                  >
+                    {showAllLowStock
+                      ? "View Less ▲"
+                      : "View More ▼"}
+                  </button>
+
+                )}
+
+              </>
+
+            )}
 
           </div>
 
-          <span className="low-stock-count">
-            {product.quantity} left
-          </span>
-
-        </div>
-
-      ))}
-
-      {lowStockProducts.length > 5 && (
-
-        <button
-          className="view-more-btn"
-          onClick={() =>
-            setShowAllLowStock(!showAllLowStock)
-          }
-        >
-          {showAllLowStock
-            ? "View Less ▲"
-            : "View More ▼"}
-        </button>
-
-      )}
-
-    </>
-
-  )}
-
-</div>
-
           {/* Recent Products */}
+          <div className="panel">
 
-<div className="panel">
+            <h2>Recent Products</h2>
 
-  <h2>Recent Products</h2>
+            {products.length === 0 ? (
 
-  {products.length === 0 ? (
+              <p>No products found.</p>
 
-    <p>No products found.</p>
+            ) : (
 
-  ) : (
+              <>
+                {(showAllRecent
+                  ? [...products].sort(
+                      (a, b) =>
+                        new Date(b.createdAt) -
+                        new Date(a.createdAt)
+                    )
+                  : [...products]
+                      .sort(
+                        (a, b) =>
+                          new Date(b.createdAt) -
+                          new Date(a.createdAt)
+                      )
+                      .slice(0, 5)
+                ).map((product) => (
 
-    <>
-  {(showAllRecent
-    ? [...products].sort(
-        (a, b) =>
-          new Date(b.createdAt) - new Date(a.createdAt)
-      )
-    : [...products]
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt) - new Date(a.createdAt)
-        )
-        .slice(0, 5)
-  ).map((product) => (
+                  <div
+                    key={product._id}
+                    className="recent-product"
+                  >
+                    <strong>{product.name}</strong>
+                  </div>
 
-    <div
-      key={product._id}
-      className="recent-product"
-    >
-      <strong>{product.name}</strong>
-    </div>
+                ))}
 
-  ))}
+                {products.length > 5 && (
+                  <button
+                    className="view-more-btn"
+                    onClick={() =>
+                      setShowAllRecent(!showAllRecent)
+                    }
+                  >
+                    {showAllRecent
+                      ? "View Less ▲"
+                      : "View More ▼"}
+                  </button>
+                )}
+              </>
 
-  {products.length > 5 && (
-    <button
-      className="view-more-btn"
-      onClick={() => setShowAllRecent(!showAllRecent)}
-    >
-      {showAllRecent ? "View Less ▲" : "View More ▼"}
-    </button>
-  )}
-</>
+            )}
 
-  )}
-
-</div>
+          </div>
 
         </div>
 
       </div>
+
       <FloatingAssistant />
     </div>
   );
