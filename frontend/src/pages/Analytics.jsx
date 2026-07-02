@@ -59,7 +59,7 @@ function Analytics() {
 
   const timeSaved = products.length * 3;
 
-  const aiQueries = 0;
+  const [aiQueries, setAiQueries] = useState(0);
 
   const inventoryStatus = [
   {
@@ -90,21 +90,38 @@ const PIE_COLORS = [
   "#EF4444",
 ];
 
-  const categoryMap = {};
+  const shelfMap = {};
 
 products.forEach((product) => {
-  const category = product.category || "Other";
+  const shelf = product.shelf || "Unknown";
 
-  if (!categoryMap[category]) {
-    categoryMap[category] = 0;
+  if (!shelfMap[shelf]) {
+    shelfMap[shelf] = 0;
   }
 
-  categoryMap[category] += Number(product.quantity);
+  shelfMap[shelf] += Number(product.quantity);
 });
 
-const categoryData = Object.keys(categoryMap).map((category) => ({
-  category,
-  quantity: categoryMap[category],
+const shelfData = Object.keys(shelfMap).map((shelf) => ({
+  shelf,
+  quantity: shelfMap[shelf],
+}));
+
+const lowStockShelfMap = {};
+
+lowStockProducts.forEach((product) => {
+  const shelf = product.shelf || "Unknown";
+
+  if (!lowStockShelfMap[shelf]) {
+    lowStockShelfMap[shelf] = 0;
+  }
+
+  lowStockShelfMap[shelf]++;
+});
+
+const lowStockShelfData = Object.keys(lowStockShelfMap).map((shelf) => ({
+  shelf,
+  count: lowStockShelfMap[shelf],
 }));
 
   const handleAIInsights = async () => {
@@ -113,6 +130,8 @@ const categoryData = Object.keys(categoryMap).map((category) => ({
   const summary = await generateAIInsights();
 
   setAiSummary(summary);
+
+  setAiQueries((prev) => prev + 1);
 
   setLoadingAI(false);
 };
@@ -149,6 +168,24 @@ const topInventoryValue = [...products]
   .sort((a, b) => b.value - a.value)
   .slice(0, 5);
 
+  const shelfValueMap = {};
+
+products.forEach((product) => {
+  const shelf = product.shelf || "Unknown";
+
+  if (!shelfValueMap[shelf]) {
+    shelfValueMap[shelf] = 0;
+  }
+
+  shelfValueMap[shelf] +=
+    Number(product.quantity) * Number(product.price || 0);
+});
+
+const shelfValueData = Object.keys(shelfValueMap).map((shelf) => ({
+  shelf,
+  value: shelfValueMap[shelf],
+}));
+
 return (
   <div className="dashboard">
 
@@ -165,13 +202,40 @@ return (
         </p>
       </div>
 
+      <div className="last-updated">
+  Last Updated: {new Date().toLocaleString()}
+</div>
+
       {/* Cards */}
 <div className="analytics-cards">
 
-  <div className="analytics-card">
-    <p>Warehouse Health</p>
-    <h2>{warehouseHealth}%</h2>
-  </div>
+  <div
+  className="analytics-card"
+  style={{
+    borderLeft: `6px solid ${
+      warehouseHealth >= 90
+        ? "#22C55E"
+        : warehouseHealth >= 70
+        ? "#F59E0B"
+        : "#EF4444"
+    }`,
+  }}
+>
+  <p>Warehouse Health</p>
+
+  <h2
+    style={{
+      color:
+        warehouseHealth >= 90
+          ? "#22C55E"
+          : warehouseHealth >= 70
+          ? "#F59E0B"
+          : "#EF4444",
+    }}
+  >
+    {warehouseHealth}%
+  </h2>
+</div>
 
   <div className="analytics-card">
     <p>Total Stock Value</p>
@@ -179,7 +243,7 @@ return (
   </div>
 
   <div className="analytics-card">
-    <p>Time Saved</p>
+    <p>Estimated Time Saved</p>
     <h2>{timeSaved} mins</h2>
   </div>
 
@@ -196,7 +260,7 @@ return (
   <div className="analytics-panel ai-panel">
 <div className="ai-header">
 
-  <h2>AI Warehouse Assistant</h2>
+  <h2>AI Inventory Insights</h2>
 
   <button
     className="generate-ai-btn"
@@ -208,12 +272,30 @@ return (
 </div>
 
     {loadingAI ? (
-      <p>Generating AI Insights...</p>
-    ) : (
-      <div className="ai-report">
-        <ReactMarkdown>{aiSummary}</ReactMarkdown>
-      </div>
-    )}
+  <p>Generating AI Insights...</p>
+) : aiSummary ? (
+  <div className="ai-report">
+    <ReactMarkdown>{aiSummary}</ReactMarkdown>
+  </div>
+) : (
+  <div className="ai-report ai-placeholder">
+
+  <p>Inventory Health Analysis</p>
+
+  <p>Stock Optimization Suggestions</p>
+
+  <p>Low Stock Risk Detection</p>
+
+  <p>Inventory Value Summary</p>
+
+  <p>AI Recommendations</p>
+
+  <small>
+    Click <strong>Generate AI Insights</strong> to receive an AI-generated report.
+  </small>
+
+</div>
+)}
 
   </div>
 
@@ -225,18 +307,18 @@ return (
 
   <div className="analytics-panel">
 
-    <h2>Stock by Category</h2>
+    <h2>Stock Distribution by Shelf</h2>
 
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={categoryData}>
-        <XAxis dataKey="category" />
+      <BarChart data={shelfData}>
+        <XAxis dataKey="shelf" />
         <YAxis />
         <Tooltip />
 
         <Bar
-          dataKey="quantity"
-          fill="#3B82F6"
-        />
+    dataKey="quantity"
+    fill="#3B82F6"
+/>
 
       </BarChart>
     </ResponsiveContainer>
@@ -302,30 +384,22 @@ return (
 
   <div className="analytics-panel">
 
-    <h2>Worker Activity</h2>
+  <h2>Inventory Value by Shelf</h2>
 
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart
-        data={[
-          { worker: "Admin", tasks: 32 },
-          { worker: "Worker 1", tasks: 21 },
-          { worker: "Worker 2", tasks: 18 },
-        ]}
-      >
-        <XAxis dataKey="worker" />
-        <YAxis />
-        <Tooltip />
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={shelfValueData}>
+      <XAxis dataKey="shelf" />
+      <YAxis />
+      <Tooltip />
 
-        <Bar
-          dataKey="tasks"
-          fill="#8B5CF6"
-        />
+      <Bar
+        dataKey="value"
+        fill="#10B981"
+      />
+    </BarChart>
+  </ResponsiveContainer>
 
-      </BarChart>
-    </ResponsiveContainer>
-
-  </div>
-
+</div>
 </div>
 
 
