@@ -75,3 +75,36 @@
   background: white;
   color: #222;      
 }
+
+.question-btn {
+  width: 100%;
+  text-align: left;
+
+  margin-top: 10px;
+  padding: 10px 12px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #f3f4f6;
+  cursor: pointer;
+
+  transition: 0.2s;
+  color: #222;
+}
+
+.question-btn:hover {
+  background: #dbeafe;
+}
+
+.assistant-answer {
+  margin-top: 18px;
+  padding: 12px;
+
+  background: #eef4ff;
+  border-left: 4px solid #2563eb;
+
+  border-radius: 8px;
+  color: #222;
+  line-height: 1.5;
+}
