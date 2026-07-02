@@ -1,157 +1,238 @@
-#  AI Smart Warehouse Management System
+# StockPilot – AI Powered Inventory Management System
 
-An intelligent warehouse management platform designed to streamline inventory tracking, warehouse operations, and stock monitoring through QR-code-based product identification, real-time inventory management, analytics, and warehouse location mapping.
+StockPilot is a modern AI-powered warehouse management system that simplifies inventory tracking, warehouse organization, and stock management through an intelligent dashboard, real-time inventory updates, QR code generation, warehouse location mapping, and an AI warehouse assistant.
 
----
-
-##  Overview
-
-AI Smart Warehouse is a full-stack web application that helps warehouses efficiently manage products, monitor inventory levels, visualize storage locations, and improve operational efficiency. The system provides secure authentication, inventory management, QR code generation, warehouse mapping, and analytics in a centralized dashboard.
+Designed for warehouses, retailers, and distributors, StockPilot helps reduce manual work, improve inventory visibility, and speed up product management.
 
 ---
 
-##  Features
+# Features
 
-###  Authentication & Security
-- User Registration and Login
-- JWT-based Authentication
+##  Authentication
+- Secure User Registration & Login
+- JWT Authentication
+- Password Encryption using bcrypt
 - Protected Routes
-- Role-Based Access Control
-
-###  Inventory Management
-- Add, Update, Delete Products
-- Search and Filter Inventory
-- Real-Time Stock Tracking
-- Product Information Management
-
-###  QR Code Integration
-- Generate Unique QR Codes for Products
-- Download and Print QR Codes
-- Quick Product Identification
-- Fast Inventory Lookup
-
-###  Warehouse Mapping
-- Visual Warehouse Layout
-- Product Location Tracking
-- Storage Position Management
-- Easy Product Navigation
-
-###  Analytics Dashboard
-- Inventory Statistics
-- Stock Distribution Analysis
-- Product Monitoring
-- Operational Insights
-
-###  Smart Alerts
-- Low Stock Notifications
-- Inventory Monitoring
-- Stock Status Tracking
-
-###  Settings Management
-- User Profile Management
-- Account Configuration
-- System Preferences
 
 ---
 
-##  Tech Stack
+## Smart Dashboard
 
-### Frontend
+The dashboard provides a quick overview of the warehouse.
+
+Features include:
+
+-  Total Products
+-  Total Inventory Value
+-  Low Stock Products
+-  Recently Added Products
+-  Quick Navigation Cards
+-  Integrated AI Warehouse Assistant
+
+---
+
+## Inventory Management
+
+Manage products with complete CRUD functionality.
+
+- Add Products
+- Update Products
+- Delete Products
+- Search Products
+- Category Management
+- Quantity Tracking
+- Shelf/Rack Allocation
+- Product Pricing
+
+---
+
+## AI Warehouse Assistant
+
+Powered by **Groq LLM**, the AI assistant can answer warehouse-related queries such as:
+
+- Product lookup
+- Inventory information
+- Stock-related questions
+- Warehouse assistance
+- General inventory guidance
+
+---
+
+## Warehouse Locator
+
+Locate products instantly inside the warehouse.
+
+Features:
+
+- Visual Shelf Mapping
+- Rack-wise Organization
+- Easy Product Location
+- Organized Storage Layout
+
+---
+
+## QR Code Integration
+
+Every product automatically receives its own QR Code.
+
+- Generate QR Codes
+- Download QR Codes
+- Print QR Codes
+- Quick Product Identification
+
+---
+
+## Low Stock Monitoring
+
+Automatically detects products running low on inventory.
+
+- Low Stock Alerts
+- Dashboard Warning Cards
+- Easy Inventory Monitoring
+
+---
+
+## Modern UI
+
+- Responsive Design
+- Clean Dashboard
+- Interactive Cards
+- Professional Interface
+- Mobile Friendly
+
+---
+
+# Tech Stack
+
+## Frontend
+
 - React.js
 - Vite
-- CSS3
+- React Router
 - Axios
+- CSS3
 - React Icons
 
-### Backend
+---
+
+## Backend
+
 - Node.js
 - Express.js
 
-### Database
+---
+
+## Database
+
 - MongoDB Atlas
 - Mongoose
 
-### Authentication
-- JWT (JSON Web Tokens)
+---
+
+## Authentication
+
+- JWT
 - bcryptjs
 
-### Additional Libraries
+---
+
+## AI Integration
+
+- Groq API
+
+---
+
+## Other Libraries
+
 - QRCode
-- Recharts
 - Lucide React
 
 ---
 
-##  System Architecture
+# System Architecture
 
 ```text
-Frontend (React + Vite)
-          │
-          ▼
-REST API (Express.js)
-          │
-          ▼
-MongoDB Atlas Database
-          │
-          ▼
-Warehouse Inventory Data
+              React + Vite Frontend
+                      │
+                      ▼
+              Express.js REST API
+                      │
+      ┌───────────────┴───────────────┐
+      ▼                               ▼
+ MongoDB Atlas                  Groq AI API
+      │                               │
+      └───────────────┬───────────────┘
+                      ▼
+           StockPilot Warehouse System
 ```
 
 ---
 
-##  Project Structure
+# Project Structure
 
 ```text
-AI-Smart-Warehouse/
-│
+StockPilot-and-Inventory-Locator/
+
 ├── frontend/
+│
 │   ├── src/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   ├── services/
-│   │   ├── assets/
-│   │   └── App.jsx
 │   │
-│   └── package.json
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── App.jsx
+│   └── main.jsx
+│
 │
 ├── backend/
-│   ├── controllers/
-│   ├── routes/
-│   ├── models/
-│   ├── middleware/
+│
 │   ├── config/
-│   └── server.js
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── server.js
+│   └── package.json
 │
 └── README.md
 ```
 
 ---
 
-##  Installation
+# Installation
 
-### Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/reocodes-51/Stockpilot-and-Inventory-Locator.git
+
 cd Stockpilot-and-Inventory-Locator
 ```
 
-### Backend Setup
+---
+
+## Backend Setup
 
 ```bash
 cd backend
+
 npm install
 ```
 
-Create a `.env` file:
+Create a `.env`
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+
+MONGO_URI=your_mongodb_connection
+
+JWT_SECRET=your_secret
+
+GROQ_API_KEY=your_groq_api_key
 ```
 
-Start Backend:
+Run backend
 
 ```bash
 npm start
@@ -159,85 +240,104 @@ npm start
 
 ---
 
-### Frontend Setup
+## Frontend Setup
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
-Frontend will run on:
+Frontend
 
-```text
+```
 http://localhost:5173
 ```
 
-Backend will run on:
+Backend
 
-```text
+```
 http://localhost:5000
 ```
 
 ---
 
-
-## Deployment:
-
-The project is deployed using the following platforms:
+# Deployment
 
 ## Frontend
-- Platform: Vercel
-- Framework: React.js
+
+- Vercel
 
 ## Backend
-- Platform: Render
-- Framework: Node.js + Express.js
 
+- Render
 
-## 📸 Key Modules
+## Database
+
+- MongoDB Atlas
+
+---
+
+# 📷 Application Modules
 
 ### Dashboard
-- Inventory Overview
-- Product Statistics
-- Stock Monitoring
+
+- Warehouse Overview
+- Inventory Summary
+- Recent Products
+- Inventory Value
+- Low Stock Alerts
+- AI Assistant
+
+---
 
 ### Inventory
-- Product CRUD Operations
-- Search & Filtering
+
+- Product CRUD
+- Search
 - Product Details
-
-### QR Management
-- Generate Product QR Codes
-- Download & Print Codes
-
-### Warehouse Map
-- Track Product Locations
-- Visual Warehouse Layout
-
-### Analytics
-- Inventory Trends
-- Stock Insights
-- Performance Monitoring
+- Categories
+- QR Generation
 
 ---
 
-##  Use Cases
+###  Warehouse Locator
+
+- Shelf Mapping
+- Product Locations
+- Rack Navigation
+
+---
+
+### AI Assistant
+
+- Chat Interface
+- Inventory Questions
+- Warehouse Guidance
+- AI Responses
+
+---
+
+#  Use Cases
 
 - Warehouses
+- Retail Stores
 - Distribution Centers
-- Retail Inventory Management
-- Manufacturing Storage Facilities
-- Logistics Operations
+- Manufacturing Units
+- Logistics Companies
+- Inventory Management
 
 ---
 
-##  Team Project
+#  Developed By
 
-Developed as a full-stack warehouse management solution to improve inventory visibility, operational efficiency, and stock tracking through modern web technologies and intelligent inventory workflows.
+- Rajyavardhan Singh Rathore
+- Bhavya Vaish
 
 ---
 
-## ⭐ Support
+# ⭐ If you like this project
 
-If you found this project useful, consider giving it a star on GitHub.
+Please consider giving this repository a ⭐ on GitHub.
