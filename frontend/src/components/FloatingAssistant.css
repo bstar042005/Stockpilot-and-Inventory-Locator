@@ -1,0 +1,27 @@
+.floating-assistant {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+
+  width: 60px;
+  height: 60px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #2563eb;
+  color: white;
+
+  font-size: 26px;
+  cursor: pointer;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+
+  transition: all 0.3s ease;
+
+  z-index: 9999;
+}
+
+.floating-assistant:hover {
+  transform: scale(1.08);
+}

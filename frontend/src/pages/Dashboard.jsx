@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./Dashboard.css";
 import Sidebar from "../components/Sidebar";
+import FloatingAssistant from "../components/FloatingAssistant";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -223,6 +224,7 @@ function Dashboard() {
         </div>
 
       </div>
+      <FloatingAssistant />
     </div>
   );
 }
