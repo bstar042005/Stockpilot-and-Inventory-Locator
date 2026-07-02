@@ -4,26 +4,15 @@ import API from "../services/api";
 import "./Dashboard.css";
 import Sidebar from "../components/Sidebar";
 
-// import {
-//   FiGrid,
-//   FiPackage,
-//   FiMap,
-//   FiBarChart2,
-//   FiSettings,
-// } from "react-icons/fi";
-
 function Dashboard() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const loggedUser =
-      localStorage.getItem("user");
+    const loggedUser = localStorage.getItem("user");
 
     if (!loggedUser) {
       navigate("/");
@@ -42,19 +31,13 @@ function Dashboard() {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
-  };
-
   const totalQuantity = products.reduce(
-    (sum, product) =>
-      sum + Number(product.quantity),
+    (sum, product) => sum + Number(product.quantity),
     0
   );
 
   const lowStockProducts = products.filter(
-    (product) => product.quantity < 20
+    (product) => Number(product.quantity) < 20
   );
 
   const inventoryValue = products.reduce(
@@ -65,39 +48,51 @@ function Dashboard() {
     0
   );
 
-  const role =
-  localStorage.getItem("role");
+  // Greeting
 
-const name =
-  localStorage.getItem("name");
+  const firstName =
+    user?.name?.split(" ")[0] || "User";
+
+  const hour = new Date().getHours();
+
+  let greeting = "";
+
+  if (hour < 12) {
+    greeting = "Good Morning";
+  } else if (hour < 17) {
+    greeting = "Good Afternoon";
+  } else if (hour < 21) {
+    greeting = "Good Evening";
+  } else {
+    greeting = "Good Night";
+  }
 
   return (
     <div className="dashboard">
+      <Sidebar />
 
-    <Sidebar />
-      {/* Main Content */}
       <div className="main">
 
+        {/* Header */}
+
         <div className="topbar">
-          <div>
 
-            <h2>
-              Welcome {name}
-            </h2>
+          <h2 className="greeting">
+            {greeting}, {firstName}
+          </h2>
 
-            <p>
-              Logged in as {role}
-            </p>
-            <h1>Dashboard</h1>
+          <h1>Dashboard</h1>
 
-            <p>
-              Overview of inventory and
-              warehouse operations
-            </p>
-          </div>
+          <p className="dashboard-subtitle">
+            Monitor your warehouse inventory,
+            stock levels and warehouse operations
+            in real time.
+          </p>
+
         </div>
 
-        {/* Cards */}
+        {/* Statistics Cards */}
+
         <div className="cards">
 
           <div className="card">
@@ -119,49 +114,55 @@ const name =
 
           <div className="card">
             <p>Low Stock Items</p>
+            <h2>{lowStockProducts.length}</h2>
+          </div>
+
+          <div className="card">
+            <p>Current Streak</p>
             <h2>
-              {lowStockProducts.length}
+              {user?.currentStreak || 1} Days
             </h2>
           </div>
 
           <div className="card">
-              <p>Current Streak</p>
-              <h2>
-                {user?.currentStreak || 1} Days
-              </h2>
-            </div>
-
-            <div className="card">
-              <p>Longest Streak</p>
-              <h2>
-                {user?.longestStreak || 1} Days
-              </h2>
-            </div>
+            <p>Longest Streak</p>
+            <h2>
+              {user?.longestStreak || 1} Days
+            </h2>
+          </div>
 
         </div>
 
-        {/* Bottom Section */}
+        {/* Bottom Panels */}
+
         <div
           className="sections"
-          style={{ marginTop: "20px" }}
+          style={{ marginTop: "24px" }}
         >
 
-          {/* Low Stock Alerts */}
+          {/* Low Stock */}
+
           <div className="panel">
 
             <h2>Low Stock Alerts</h2>
 
             {lowStockProducts.length === 0 ? (
+
               <p>
                 All products are sufficiently stocked.
               </p>
+
             ) : (
+
               lowStockProducts.map((product) => (
+
                 <div
                   key={product._id}
                   className="low-stock-item"
                 >
+
                   <div>
+
                     <strong>
                       {product.name}
                     </strong>
@@ -171,37 +172,50 @@ const name =
                     <small>
                       {product.productId}
                     </small>
+
                   </div>
 
                   <span className="low-stock-count">
                     {product.quantity} left
                   </span>
+
                 </div>
+
               ))
+
             )}
 
           </div>
 
           {/* Recent Products */}
+
           <div className="panel">
 
             <h2>Recent Products</h2>
 
             {products.length === 0 ? (
+
               <p>No products found.</p>
+
             ) : (
+
               products
                 .slice(0, 5)
                 .map((product) => (
+
                   <div
                     key={product._id}
                     className="recent-product"
                   >
+
                     <strong>
                       {product.name}
                     </strong>
+
                   </div>
+
                 ))
+
             )}
 
           </div>
@@ -209,7 +223,6 @@ const name =
         </div>
 
       </div>
-
     </div>
   );
 }
