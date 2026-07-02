@@ -11,6 +11,8 @@ function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [products, setProducts] = useState([]);
+  const [showAllLowStock, setShowAllLowStock] = useState(false);
+  const [showAllRecent, setShowAllRecent] = useState(false);
 
   useEffect(() => {
     const loggedUser = localStorage.getItem("user");
@@ -142,84 +144,115 @@ function Dashboard() {
         >
 
           {/* Low Stock */}
+<div className="panel">
 
-          <div className="panel">
+  <h2>Low Stock Alerts</h2>
 
-            <h2>Low Stock Alerts</h2>
+  {lowStockProducts.length === 0 ? (
 
-            {lowStockProducts.length === 0 ? (
+    <p>All products are sufficiently stocked.</p>
 
-              <p>
-                All products are sufficiently stocked.
-              </p>
+  ) : (
 
-            ) : (
+    <>
+      {(showAllLowStock
+        ? lowStockProducts
+        : lowStockProducts.slice(0, 5)
+      ).map((product) => (
 
-              lowStockProducts.map((product) => (
+        <div
+          key={product._id}
+          className="low-stock-item"
+        >
 
-                <div
-                  key={product._id}
-                  className="low-stock-item"
-                >
+          <div>
 
-                  <div>
+            <strong>{product.name}</strong>
 
-                    <strong>
-                      {product.name}
-                    </strong>
+            <br />
 
-                    <br />
-
-                    <small>
-                      {product.productId}
-                    </small>
-
-                  </div>
-
-                  <span className="low-stock-count">
-                    {product.quantity} left
-                  </span>
-
-                </div>
-
-              ))
-
-            )}
+            <small>{product.productId}</small>
 
           </div>
+
+          <span className="low-stock-count">
+            {product.quantity} left
+          </span>
+
+        </div>
+
+      ))}
+
+      {lowStockProducts.length > 5 && (
+
+        <button
+          className="view-more-btn"
+          onClick={() =>
+            setShowAllLowStock(!showAllLowStock)
+          }
+        >
+          {showAllLowStock
+            ? "View Less ▲"
+            : "View More ▼"}
+        </button>
+
+      )}
+
+    </>
+
+  )}
+
+</div>
 
           {/* Recent Products */}
 
-          <div className="panel">
+<div className="panel">
 
-            <h2>Recent Products</h2>
+  <h2>Recent Products</h2>
 
-            {products.length === 0 ? (
+  {products.length === 0 ? (
 
-              <p>No products found.</p>
+    <p>No products found.</p>
 
-            ) : (
+  ) : (
 
-              products
-                .slice(0, 5)
-                .map((product) => (
+    <>
+      {(showAllRecent
+        ? products
+        : products.slice(0, 5)
+      ).map((product) => (
 
-                  <div
-                    key={product._id}
-                    className="recent-product"
-                  >
+        <div
+          key={product._id}
+          className="recent-product"
+        >
 
-                    <strong>
-                      {product.name}
-                    </strong>
+          <strong>{product.name}</strong>
 
-                  </div>
+        </div>
 
-                ))
+      ))}
 
-            )}
+      {products.length > 5 && (
 
-          </div>
+        <button
+          className="view-more-btn"
+          onClick={() =>
+            setShowAllRecent(!showAllRecent)
+          }
+        >
+          {showAllRecent
+            ? "View Less ▲"
+            : "View More ▼"}
+        </button>
+
+      )}
+
+    </>
+
+  )}
+
+</div>
 
         </div>
 
