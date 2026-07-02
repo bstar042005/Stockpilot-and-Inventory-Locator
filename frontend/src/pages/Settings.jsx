@@ -18,9 +18,9 @@ return (
       <div className="settings-header">
         <h1>Settings</h1>
 
-        <p>
+        {/* <p>
           Manage your account information
-        </p>
+        </p> */}
       </div>
 
       <div className="settings-card">
