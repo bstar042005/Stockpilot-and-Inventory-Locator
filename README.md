@@ -280,7 +280,7 @@ http://localhost:5000
 
 ---
 
-# 📷 Application Modules
+# Application Modules
 
 ### Dashboard
 
@@ -338,6 +338,6 @@ http://localhost:5000
 
 ---
 
-# ⭐ If you like this project
+# If you like this project
 
 Please consider giving this repository a ⭐ on GitHub.
