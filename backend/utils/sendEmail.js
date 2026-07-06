@@ -1,60 +1,50 @@
-const nodemailer = require("nodemailer");
-const dns = require("dns");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendOTP = async (email, otp) => {
   try {
-    console.log("EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+    console.log("Sending OTP to:", email);
 
-    // Prefer IPv4 over IPv6
-    dns.setDefaultResultOrder("ipv4first");
-
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      requireTLS: true,
-
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-
-      tls: {
-        rejectUnauthorized: false,
-      },
-
-      connectionTimeout: 30000,
-      greetingTimeout: 30000,
-      socketTimeout: 30000,
-    });
-
-    // Verify SMTP connection
-    await transporter.verify();
-    console.log("✅ SMTP VERIFIED");
-
-    const info = await transporter.sendMail({
-      from: `"StockPilot" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: "StockPilot <onboarding@resend.dev>",
       to: email,
       subject: "StockPilot OTP Verification",
       html: `
-        <div style="font-family: Arial, sans-serif;">
-          <h2>StockPilot Account Verification</h2>
-          <p>Your OTP is:</p>
-          <h1 style="color:#2563eb;">${otp}</h1>
-          <p>This OTP is valid for 5 minutes.</p>
-        </div>
+      <div style="font-family:Arial;padding:20px">
+        <h2>StockPilot Account Verification</h2>
+
+        <p>Your OTP is</p>
+
+        <h1 style="font-size:40px;color:#2563eb;">
+          ${otp}
+        </h1>
+
+        <p>This OTP will expire in 5 minutes.</p>
+
+        <hr>
+
+        <small>
+          If you didn't request this OTP, please ignore this email.
+        </small>
+      </div>
       `,
     });
 
-    console.log("✅ Email Sent:", info.messageId);
+    if (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+
+    console.log("OTP Sent Successfully");
+    console.log(data);
 
     return true;
 
-  } catch (error) {
-    console.error("❌ EMAIL ERROR");
-    console.error(error);
-    throw error;
+  } catch (err) {
+    console.error("RESEND ERROR");
+    console.error(err);
+    throw err;
   }
 };
 
