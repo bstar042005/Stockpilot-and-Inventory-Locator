@@ -1,9 +1,13 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 
 const sendOTP = async (email, otp) => {
   try {
     console.log("EMAIL_USER:", process.env.EMAIL_USER);
     console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+
+    // Prefer IPv4 over IPv6
+    dns.setDefaultResultOrder("ipv4first");
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -14,6 +18,10 @@ const sendOTP = async (email, otp) => {
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
+      },
+
+      tls: {
+        rejectUnauthorized: false,
       },
 
       connectionTimeout: 30000,
@@ -29,7 +37,6 @@ const sendOTP = async (email, otp) => {
       from: `"StockPilot" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "StockPilot OTP Verification",
-
       html: `
         <div style="font-family: Arial, sans-serif;">
           <h2>StockPilot Account Verification</h2>
