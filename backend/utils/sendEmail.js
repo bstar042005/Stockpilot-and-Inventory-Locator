@@ -1,50 +1,52 @@
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 const sendOTP = async (email, otp) => {
   try {
-    console.log("Sending OTP to:", email);
+    await transporter.verify();
+    console.log("✅ Brevo SMTP Connected");
 
-    const { data, error } = await resend.emails.send({
-      from: "StockPilot <onboarding@resend.dev>",
+    const info = await transporter.sendMail({
+      from: `"StockPilot" <${process.env.SMTP_USER}>`,
       to: email,
       subject: "StockPilot OTP Verification",
       html: `
       <div style="font-family:Arial;padding:20px">
-        <h2>StockPilot Account Verification</h2>
+          <h2>StockPilot Account Verification</h2>
 
-        <p>Your OTP is</p>
+          <p>Your OTP is</p>
 
-        <h1 style="font-size:40px;color:#2563eb;">
-          ${otp}
-        </h1>
+          <h1 style="color:#2563eb;font-size:40px;">
+              ${otp}
+          </h1>
 
-        <p>This OTP will expire in 5 minutes.</p>
+          <p>This OTP will expire in <b>5 minutes</b>.</p>
 
-        <hr>
+          <hr>
 
-        <small>
-          If you didn't request this OTP, please ignore this email.
-        </small>
+          <small>
+            If you didn't request this OTP, simply ignore this email.
+          </small>
       </div>
       `,
     });
 
-    if (error) {
-      console.error(error);
-      throw new Error(error.message);
-    }
-
-    console.log("OTP Sent Successfully");
-    console.log(data);
+    console.log("✅ Email Sent:", info.messageId);
 
     return true;
-
-  } catch (err) {
-    console.error("RESEND ERROR");
-    console.error(err);
-    throw err;
+  } catch (error) {
+    console.error("❌ EMAIL ERROR");
+    console.error(error);
+    throw error;
   }
 };
 
