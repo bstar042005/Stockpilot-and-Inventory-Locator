@@ -1,51 +1,55 @@
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
 const sendOTP = async (email, otp) => {
   try {
-    await transporter.verify();
-    console.log("✅ Brevo SMTP Connected");
+    console.log("EMAIL_USER:", process.env.EMAIL_USER);
+    console.log(
+      "EMAIL_PASS exists:",
+      !!process.env.EMAIL_PASS
+    );
 
-    const info = await transporter.sendMail({
-      from: `"StockPilot" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: "StockPilot OTP Verification",
-      html: `
-      <div style="font-family:Arial;padding:20px">
-          <h2>StockPilot Account Verification</h2>
+    const transporter =
+      nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-          <p>Your OTP is</p>
-
-          <h1 style="color:#2563eb;font-size:40px;">
+    const info =
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject:
+          "StockPilot OTP Verification",
+        html: `
+          <div style="font-family: Arial, sans-serif;">
+            <h2>StockPilot Account Verification</h2>
+            <p>Your OTP is:</p>
+            <h1 style="color: #2563eb;">
               ${otp}
-          </h1>
+            </h1>
+            <p>
+              This OTP is valid for
+              5 minutes.
+            </p>
+          </div>
+        `,
+      });
 
-          <p>This OTP will expire in <b>5 minutes</b>.</p>
-
-          <hr>
-
-          <small>
-            If you didn't request this OTP, simply ignore this email.
-          </small>
-      </div>
-      `,
-    });
-
-    console.log("✅ Email Sent:", info.messageId);
+    console.log(
+      "Email sent:",
+      info.messageId
+    );
 
     return true;
   } catch (error) {
-    console.error("❌ EMAIL ERROR");
+    console.error(
+      "EMAIL ERROR:"
+    );
     console.error(error);
+
     throw error;
   }
 };
