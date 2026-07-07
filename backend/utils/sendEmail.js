@@ -1,37 +1,38 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("@getbrevo/brevo");
+
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+apiInstance.setApiKey(
+  SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY
+);
 
 const sendOTP = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp-relay.brevo.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    await apiInstance.sendTransacEmail({
+      sender: {
+        email: "bstar042005@gmail.com",
+        name: "StockPilot",
       },
-    });
-
-    const info = await transporter.sendMail({
-      from: `"StockPilot" <${process.env.EMAIL_USER}>`,
-      to: email,
+      to: [
+        {
+          email: email,
+        },
+      ],
       subject: "StockPilot OTP Verification",
-      html: `
-        <div style="font-family: Arial, sans-serif;">
-          <h2>StockPilot Account Verification</h2>
-          <p>Your OTP is:</p>
-          <h1 style="color:#2563eb">${otp}</h1>
-          <p>This OTP is valid for 5 minutes.</p>
-        </div>
+      htmlContent: `
+        <h2>StockPilot Account Verification</h2>
+        <p>Your OTP is:</p>
+        <h1 style="color:#2563eb">${otp}</h1>
+        <p>This OTP is valid for 5 minutes.</p>
       `,
     });
 
-    console.log("Email sent:", info.messageId);
+    console.log("OTP Email Sent");
     return true;
-  } catch (error) {
-    console.error("EMAIL ERROR:");
-    console.error(error);
-    throw error;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };
 
