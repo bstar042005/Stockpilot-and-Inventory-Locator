@@ -10,7 +10,7 @@ The platform helps businesses reduce manual work, improve inventory visibility, 
 
 **Frontend:** https://stockpilot-and-inventory-locator.vercel.app/
 
-**Backend API:** https://stockpilot-and-inventory-locator.onrender.com/api
+**Backend:** https://stockpilot-and-inventory-locator.onrender.com
 
 ---
 
