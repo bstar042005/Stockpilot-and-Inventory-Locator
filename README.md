@@ -8,7 +8,7 @@ The platform helps businesses reduce manual work, improve inventory visibility, 
 
 ## Live Demo
 
-**Frontend:** https:https://stockpilot-and-inventory-locator.vercel.app/
+**Frontend:** https://stockpilot-and-inventory-locator.vercel.app/
 
 **Backend API:** https://stockpilot-and-inventory-locator.onrender.com/api
 
@@ -28,7 +28,7 @@ The platform helps businesses reduce manual work, improve inventory visibility, 
 
 ---
 
-# 📸 Application Screenshots
+# Application Screenshots
 
 | Login | Dashboard |
 |-------|-----------|
@@ -41,22 +41,6 @@ The platform helps businesses reduce manual work, improve inventory visibility, 
 | AI Warehouse Assistant | QR Code Generation |
 |-------------------------|--------------------|
 | ![](screenshots/chatbot.jpeg) | ![](screenshots/qr-code.jpeg) |
-
----
-
-## Product Analytics (PostHog)
-
-![](screenshots/analytics.jpeg)
-
-## Warehouse Locator
-
-<img src="screenshots/warehouse.png" width="900">
-
----
-
-## AI Warehouse Assistant
-
-<img src="screenshots/chatbot.png" width="900">
 
 ---
 
